@@ -5,19 +5,19 @@ import bcryptjs from "bcryptjs";
 
 export const getUser = async (req, res) => {
     try {
-        const loggedin = req.loggedin;
+        const loggedIn = req.loggedIn;
 
-        if (loggedin) {
+        if (loggedIn) {
             // User is logged in, fetch user details
             const user = await User.findOne({ _id: req.user._id });
             return res.status(200).json({
                 message: "User fetched successfully",
                 user,
-                loggedin,
+                loggedIn,
             });
         } else {
             // User is not logged in
-            return res.status(200).json({ message: "Not logged in", loggedin });
+            return res.status(200).json({ message: "Not logged in", loggedIn });
         }
     } catch (error) {
         console.error("Error:", error.message);

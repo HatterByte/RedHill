@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import AuthRoutes from './routes/auth.js';
+import UserRoutes from './routes/user.js';
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
     res.send('API Running');
 });
 app.use('/auth',AuthRoutes);
+app.use('/user',UserRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
