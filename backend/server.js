@@ -7,7 +7,6 @@ import AuthRoutes from './routes/auth.js';
 import UserRoutes from './routes/user.js';
 import TestRoutes from './routes/test.js';
 import ComplaintRoutes from './routes/complaint.js';
-import PnrRoutes from './routes/pnr.js';
 
 dotenv.config();
 const app = express();
@@ -36,7 +35,6 @@ app.use('/auth',AuthRoutes);
 app.use('/user',UserRoutes);
 app.use('/test',TestRoutes);
 app.use('/complaints',ComplaintRoutes);
-app.use('/pnr',PnrRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

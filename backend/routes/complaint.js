@@ -13,7 +13,7 @@ const router = express.Router();
 router.post('/register', auth, registerComplaint);
 
 // Get complaint by ID
-router.get('/complaint/:complaintId', getComplaintById);
+router.get('/complaint/:complaintId', auth, getComplaintById);
 
 // Get all complaints for a user (requires authentication)
 router.get('/user/:userId', auth, getUserComplaints);

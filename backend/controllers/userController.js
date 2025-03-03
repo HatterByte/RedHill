@@ -1,5 +1,4 @@
 import User from "../models/User.js";
-import Complaints from "../models/Complaints.js";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
@@ -50,24 +49,4 @@ export const logoutUser = async (req, res) => {
   }
 };
 
-export const getComplaints = async (req, res) => {
-  const loggedIn = req.loggedIn;
 
-  try {
-    if (!loggedIn) {
-      return res.status(200).json({ message: "Not logged in", loggedIn });
-    }
-    const user = await User.findOne({ _id: req.user._id });
-    let myComplaints = [];
-    for (const ticket of user.complaintTickets) {
-      const temp = await Complaints.findOne({ complaintId: ticket });
-      myComplaints.push(temp);
-    }
-
-    return res
-      .status(200)
-      .json({ message: "Complaints Accessed", loggedIn, myComplaints });
-  } catch (error) {
-    return res.status(500).json({ message: "Internal Server Issue", loggedIn });
-  }
-};
