@@ -1,0 +1,8 @@
+@import "tailwindcss";
+.notranslate {
+  unicode-bidi: plaintext;
+}
+#file-upload-button{
+  cursor: pointer;
+  height: 0;
+}

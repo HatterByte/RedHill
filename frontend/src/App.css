@@ -1,0 +1,5 @@
+@import "tailwindcss";
+#file-upload-button{
+    cursor: pointer;
+    height: 0;
+  }
