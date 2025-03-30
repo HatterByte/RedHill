@@ -13,8 +13,8 @@ const complaintSchema = new mongoose.Schema({
     trainDepartureDate: String,
     media: [String],
     description: String,
-    category: String,
-    subCategory: String,
+    type: String,
+    subtype: String,
     employeeWorking: String,
     resolved: { type: Number, default: 0 }, // 0 = Not resolved, 1 = Resolved
     severity: String

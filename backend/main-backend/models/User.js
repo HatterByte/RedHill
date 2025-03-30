@@ -5,7 +5,8 @@ const UserSchema = new mongoose.Schema({
     password: String,
     name: String,
     complaintTickets:[String],
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    chatId: { type: String, unique: true, sparse: true }
 });
 
 export default mongoose.model('User', UserSchema);

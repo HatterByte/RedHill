@@ -52,7 +52,7 @@ export const getUser = async (req, res) => {
                         expiresIn: "1d",
                     
                     });
-                return res.cookie("acessToken", token,options).status(200).json({message:"User Registered sucessfully",CreatedUser})
+                return res.cookie("accessToken", token,options).status(200).json({message:"User Registered sucessfully",CreatedUser})
 
             }
             

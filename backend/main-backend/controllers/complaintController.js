@@ -19,8 +19,8 @@ export const registerComplaint = async (req, res) => {
       gender,
       age,
       description = "",
-      category,
-      subCategory,
+      type,
+      subtype,
       media = [],
     } = req.body;
 
@@ -40,10 +40,10 @@ export const registerComplaint = async (req, res) => {
       return res.status(400).json({ success: false, message: "Phone number is required" });
     }
 
-    if (!description && media.length === 0 && (!category || !subCategory)) {
+    if (!description && media.length === 0 && (!type || !subtype)) {
       return res.status(400).json({
         success: false,
-        message: "Either description, media, or category and subcategory must be provided",
+        message: "Either description, media, or type and subtype must be provided",
       });
     }
 
@@ -56,12 +56,12 @@ export const registerComplaint = async (req, res) => {
     const { trainCode, trainName, trainDepartureDate } = pnrDetails;
 
     let complaintAnalysis = {
-      category: category || "",
-      subCategory: subCategory || "",
+      type: type || "",
+      subtype: subtype || "",
       severity: "Low",
     };
 
-    if ((!category || !subCategory) && (description || media.length > 0)) {
+    if ((!type || !subtype) && (description || media.length > 0)) {
       complaintAnalysis = await analyzeComplaint({ description, media });
     }
 
@@ -86,8 +86,8 @@ export const registerComplaint = async (req, res) => {
       trainDepartureDate,
       media,
       description,
-      category: complaintAnalysis.category,
-      subCategory: complaintAnalysis.subCategory,
+      type: complaintAnalysis.type,
+      subtype: complaintAnalysis.subtype,
       severity: complaintAnalysis.severity,
       employeeWorking: "",
       resolved: 0,
@@ -106,8 +106,8 @@ export const registerComplaint = async (req, res) => {
       success: true,
       message: "Complaint registered successfully",
       complaintId,
-      category: complaintAnalysis.category,
-      subCategory: complaintAnalysis.subCategory,
+      type: complaintAnalysis.type,
+      subtype: complaintAnalysis.subtype,
       severity: complaintAnalysis.severity,
     });
   } catch (error) {
@@ -243,13 +243,13 @@ export const getAllComplaints = async (req, res) => {
     }
 
     // Optional filtering
-    const { category, subCategory, resolved, severity, startDate, endDate } =
+    const { type, subtype, resolved, severity, startDate, endDate } =
       req.query;
 
     const filter = {};
 
-    if (category) filter.category = category;
-    if (subCategory) filter.subCategory = subCategory;
+    if (type) filter.type = type;
+    if (subtype) filter.subtype = subtype;
     if (resolved !== undefined) filter.resolved = parseInt(resolved);
     if (severity) filter.severity = severity;
 

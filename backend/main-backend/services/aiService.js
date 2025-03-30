@@ -6,9 +6,9 @@ import axios from 'axios';
  */
 
 /**
- * Analyze complaint text and media to determine category, subcategory, and severity
+ * Analyze complaint text and media to determine type, subtype, and severity
  * @param {Object} complaintData - Contains description, media links, and other relevant data
- * @returns {Object} Analysis results with category, subCategory, and severity
+ * @returns {Object} Analysis results with type, subtype, and severity
  */
 export const analyzeComplaint = async (complaintData) => {
     try {
@@ -36,25 +36,25 @@ export const analyzeComplaint = async (complaintData) => {
         
         // If the API call is successful
         if (response.data && response.status === 200) {
-            // Extract the category, subcategory and severity from the response
+            // Extract the type, subtype and severity from the response
             // Adjust this based on your actual API response structure
             const {
-                category = "OTHER",
-                subcategory = "GENERAL",
+                type = "OTHER",
+                subtype = "GENERAL",
                 severity = "LOW"
             } = response.data;
             
             return {
-                category: category.toUpperCase(),
-                subCategory: subcategory.toUpperCase(),
+                type: type.toUpperCase(),
+                subtype: subtype.toUpperCase(),
                 severity: severity.toUpperCase()
             };
         } else {
             // If the API doesn't return the expected data
             console.warn("AI model API returned unexpected data:", response.data);
             return {
-                category: "OTHER",
-                subCategory: "GENERAL",
+                type: "OTHER",
+                subtype: "GENERAL",
                 severity: "LOW"
             };
         }
@@ -63,8 +63,8 @@ export const analyzeComplaint = async (complaintData) => {
         console.error("Error calling AI model API:", error.message);
         // Return default values in case of error
         return {
-            category: "OTHER",
-            subCategory: "GENERAL",
+            type: "OTHER",
+            subtype: "GENERAL",
             severity: "LOW"
         };
     }
