@@ -1,8 +1,20 @@
 @import "tailwindcss";
+
 .notranslate {
   unicode-bidi: plaintext;
 }
-#file-upload-button{
+
+#file-upload-button {
   cursor: pointer;
   height: 0;
+}
+
+.skiptranslate {
+  iframe {
+    display: none;
+  }
+}
+
+body {
+  top: 0px !important;
 }

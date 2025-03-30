@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { BrowserRouter,Navigate,Route,Routes } from 'react-router-dom'
 // import { connect } from "react-redux";
 import HomePage from './pages/HomePage';
+import { getUser } from './actions/auth.actions';
 
 function App(props) {
+  useEffect(() => {
+    console.log("App mounted");
+    getUser();
+  }
+  , []);
 
   return (
     <>

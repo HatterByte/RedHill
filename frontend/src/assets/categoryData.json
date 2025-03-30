@@ -1,0 +1,63 @@
+{
+    "Medical Assistance": ["Medical Assistance"],
+    "Security": [
+      "Eve-teasing/Misbehaviour with lady passengers/Rape",
+      "Theft of Passengers Belongings/Snatching",
+      "Unauthorized person in Ladies/Disabled 03/1 Comp Coach/SLR/Reserve Coach",
+      "Harassment/Extortion by Security Personnel/Railway personnel",
+      "Nuisance by Hawkers/Beggar/Eunuch",
+      "Luggage Left Behind/Unclaimed/Suspected Articles",
+      "Passenger Missing/Not responding call",
+      "Smoking/Drinking Alcohol/Narcotics",
+      "Dacoity/Robbery/Murder/Riots",
+      "Quarrelling/Hooliganism",
+      "Passenger fallen down",
+      "Nuisance by passenger",
+      "Misbehaviour",
+      "Others"
+    ],
+    "Divyangjan Facilities": [
+      "Divyangjan coach unavailability",
+      "Divyangjan toilet/washbasin",
+      "Braille signage in coach",
+      "Others"
+    ],
+    "Facilities for Women with Special Needs": ["Baby Food"],
+    "Electrical Equipment": ["Air Conditioner", "Fans", "Lights", "Charging Points", "Others"],
+    "Coach-Cleanliness": [
+      "Toilet",
+      "Washbasin",
+      "Cockroach / Rodents",
+      "Coach Interior",
+      "Coach Exterior",
+      "Others"
+    ],
+    "Punctuality": ["NTES APP", "Late Running", "Others"],
+    "Water Availability": [
+      "Packages Drinking Water / Rail Neer",
+      "Toilet",
+      "Washbasin",
+      "Others"
+    ],
+    "Coach - Maintenance": [
+      "Window/Seat Broken",
+      "Window/Door locking problem",
+      "Tap leaking/Tap not working",
+      "Broken/Missing Toilet Fittings",
+      "Jerks/Abnormal Sound",
+      "Others"
+    ],
+    "Catering & Vending Services": [
+      "Overcharging",
+      "Service Quality & Hygiene",
+      "Food Quality & Quantity",
+      "E-Catering",
+      "Food & Water Not Available",
+      "Others"
+    ],
+    "Staff Behaviour": ["Staff Behaviour"],
+    "Corruption/ Bribery": ["Corruption/ Bribery"],
+    "Bed Roll": ["Dirty / Torn", "Overcharging", "Non Availability", "Others"],
+    "Miscellaneous": ["Miscellaneous"]
+  }
+  

@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 
 const VerticalNavbar = ({ activeTab, setActiveTab }) => {
-
-    const navItems = [
-        { id: 'train', label: 'TRAIN', icon: "-25px" },
-        { id: 'station', label: 'STATION', icon: '-59px' },
-        { id: 'appreciation', label: 'APPRECIATION/ RAIL ANUBHAV', icon: '-154px' },
-        { id: 'enquiry', label: 'ENQUIRY', icon: '-93px' },
-        { id: 'track', label: 'TRACK YOUR CONCERN', icon: '-128px' },
-        { id: 'suggestions', label: 'SUGGESTIONS', icon: '-164px' },
-    ];
-
     return (
         <>
             <div className="flex flex-col w-45 mt-5 z-1">
@@ -23,21 +13,21 @@ const VerticalNavbar = ({ activeTab, setActiveTab }) => {
                 </div>
                 <div key={"Anubhav"} className={`flex flex-col relative items-center justify-center w-full p-3 border-b-[1px] border-b-[#9e2452] cursor-pointer gap-1 ${activeTab == 'Anubhav' ? 'bg-[#75002b]' : 'bg-[#930b3e]'} `} onClick={(e) => {e.preventDefault();console.log("clicked");setActiveTab("Anubhav")}}>
 
-                    <img src="/assets/HomePageFormNav/train.svg" alt="station" height={55} width={55} />
+                    <img src="/assets/HomePageImages/notepad (2).png" alt="station" height={55} width={55} />
                     <span className="text-white  text-lg">{"Anubhav"}</span>
                     {activeTab ==="Anubhav" &&<><div className="absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>
                     <div className="absolute left-[100%] top-[50%] w-0 h-0 mt-[-3px] border-t-[6px] border-t-transparent border-r-[6px] border-r-[rgba(255,255,255,0.9)] border-b-[6px] border-b-transparent"></div></>}
                 </div>
                 <div key={"Track"} className={`flex flex-col relative items-center justify-center w-full p-3 border-b-[1px] border-b-[#9e2452] cursor-pointer gap-1 ${activeTab == 'Track' ? 'bg-[#75002b]' : 'bg-[#930b3e]'} `} onClick={(e) => {e.preventDefault();console.log("clicked");setActiveTab("Track")}}>
 
-                    <img src="/assets/HomePageFormNav/train.svg" alt="station" height={55} width={55} />
+                    <img src="/assets/HomePageImages/progress (1).png" alt="station" height={55} width={55} />
                     <span className="text-white  text-lg">{"Track"}</span>
                     {activeTab ==="Track" &&<><div className="absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>
                     <div className="absolute left-[100%] top-[50%] w-0 h-0 mt-[-3px] border-t-[6px] border-t-transparent border-r-[6px] border-r-[rgba(255,255,255,0.9)] border-b-[6px] border-b-transparent"></div></>}
                 </div>
                 <div key={"Suggestion"} className={`flex flex-col relative items-center justify-center w-full p-3 border-b-[1px] border-b-[#9e2452] cursor-pointer gap-1 ${activeTab == 'Suggestion' ? 'bg-[#75002b]' : 'bg-[#930b3e]'} `} onClick={(e) => {e.preventDefault();console.log("clicked");setActiveTab("Suggestion")}}>
 
-                    <img src="/assets/HomePageFormNav/train.svg" alt="station" height={55} width={55} />
+                    <img src="/assets/HomePageImages/feedback.png" alt="station" height={55} width={55} />
                     <span className="text-white  text-lg">{"Suggestion"}</span>
                     {activeTab ==="Suggestion" &&<><div className="absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>
                     <div className="absolute left-[100%] top-[50%] w-0 h-0 mt-[-3px] border-t-[6px] border-t-transparent border-r-[6px] border-r-[rgba(255,255,255,0.9)] border-b-[6px] border-b-transparent"></div></>}
