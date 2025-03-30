@@ -86,13 +86,12 @@ export const telegramWebhook = async (req, res) => {
 // ✅ Send OTP API
 export const sendOTP = async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { phone, otp } = req.body;
     const user = await User.findOne({ phone });
 
     if (!user || !user.chatId)
       return res.status(400).json({ message: "Phone not registered!" });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await sendMessage(user.chatId, `🔢 Your OTP is : ${otp}`);
 
     res.json({ message: "OTP sent via Telegram!" });

@@ -1,15 +1,12 @@
 {
-  "dependencies": {
-    "axios": "^1.8.1"
-  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   },
   "scripts": {
     "dev": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
     "start:frontend": "cd frontend && npm run dev",
-    "start:backend": "cd backend && concurrently \"npm run start:main-backend\" \"npm run start:otp_service\"",
+    "start:backend": "cd backend && concurrently \"npm run start:main-backend\" \"npm run start:otp-service\"",
     "start:main-backend": "cd main-backend && nodemon server.js",
-    "start:otp-service": "cd otp_service && node server.js"
+    "start:otp-service": "cd otp-service && node server.js"
   }
 }

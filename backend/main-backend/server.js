@@ -1,5 +1,6 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
+import { connectRedis } from "./config/redis.js";
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 // Connect Database
 connectDB();
+connectRedis();
 
 
 //Init Middleware
@@ -39,5 +41,5 @@ app.use('/complaints',ComplaintRoutes);
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`\u{1F680} Server is running on port ${PORT}`);
 });
