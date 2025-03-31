@@ -7,6 +7,11 @@ import redisClient from "../config/redis.js";
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
+/**
+ * @desc    Generate OTP and send it to the user's phone number
+ * @route   POST /auth/request-otp
+ * @access  Public
+ */
 export const requestOTP = async (req, res) => {
   try {
     const { phone } = req.body;
@@ -36,7 +41,11 @@ export const requestOTP = async (req, res) => {
 
     const otp = generateOTP();
     const hashedOTP = await bcryptjs.hash(otp, 10);
-    await redisClient.setEx(`otp:${phone}`, 300, hashedOTP); // Store OTP in Redis (expires in 5 min)
+    await redisClient.setEx(
+      `otp:${phone}`,
+      300,
+      JSON.stringify({ otp: hashedOTP, verified: false })
+    ); // Store OTP in Redis (expires in 5 min)
 
     await axios.post("http://localhost:8000/otp/send-otp", { phone, otp });
 
@@ -47,17 +56,27 @@ export const requestOTP = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Verify OTP sent to the user's phone number
+ * @route   POST /auth/verify-otp
+ * @access  Public
+ */
 export const verifyOTP = async (req, res) => {
   try {
     const { phone, otp } = req.body;
     if (!phone || !otp)
       return res.status(400).json({ message: "Phone and OTP are required" });
 
-    const storedOTP = await redisClient.get(`otp:${phone}`);
-    const isMatch = await bcryptjs.compare(otp, storedOTP);
+    const data = await redisClient.get(`otp:${phone}`);
+    const { otp: hashedOTP, verified } = JSON.parse(data);
+    const isMatch = await bcryptjs.compare(otp, hashedOTP);
 
     if (isMatch) {
-      await redisClient.del(`otp:${phone}`);
+      await redisClient.setEx(
+        `otp:${phone}`,
+        600,
+        JSON.stringify({ otp: "verified", verified: true })
+      );
       return res.status(200).json({ message: "OTP verified successfully" });
     }
 
@@ -68,58 +87,164 @@ export const verifyOTP = async (req, res) => {
   }
 };
 
-export const getUser = async (req, res) => {
+/**
+ * @desc    Register user after OTP verification
+ * @route   POST /auth/register
+ * @access  Public
+ */
+export const registerUser = async (req, res) => {
   try {
-    const loggedIn = req.loggedIn;
-
-    if (loggedIn) {
-      // User is logged in, fetch user details
-      const user = await User.findOne({ _id: req.user._id });
-      return res.status(200).json({
-        message: "User fetched successfully",
-        user,
-        loggedIn,
-      });
-    } else {
-      // User is not logged in
-      return res.status(200).json({ message: "Not logged in", loggedIn });
+    const { phone, name, password } = req.body;
+    if (!phone || !password) {
+      return res
+        .status(400)
+        .json({ message: "Phone and password are required" });
     }
+    const otpData = await redisClient.get(`otp:${phone}`);
+    if (!otpData)
+      return res.status(400).json({ message: "OTP verification required" });
+
+    const { verified } = JSON.parse(otpData);
+    if (!verified) return res.status(400).json({ message: "OTP not verified" });
+
+    let user = await User.findOne({ phone });
+    if (user && user.password) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    user.password = hashedPassword;
+    user.name = name;
+    await user.save();
+    await redisClient.del(`otp:${phone}`);
+    const options = {
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      httpOnly: true,
+    };
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    await redisClient.setEx(`auth:${user._id}`, 900, token);
+    const safeUser = user.toObject(); // Convert to plain object
+    delete safeUser.password;
+    return res
+      .cookie("accessToken", token, options)
+      .status(200)
+      .json({ message: "User Registered sucessfully", user: safeUser });
   } catch (error) {
-    console.error("Error:", error.message);
-    return res.status(500).json({ error: error.message });
+    console.log("Error: " + error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const createUser = async (req, res) => {
+/**
+ * @desc    Verify OTP & Login user using phone and OTP
+ * @route   POST /auth/login-otp
+ * @access  Public
+ */
+export const verifyOTPLogin = async (req, res) => {
   try {
-    const { name, password, phone } = req.body;
-    const user = await User.findOne({ phone });
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
-    } else {
-      const hashPassword = await bcryptjs.hash(password, 10);
-      const CreatedUser = await User.create({
-        name: name,
-        phone: phone,
-        password: hashPassword,
-        complaintTickets: [],
-      });
-      const options = {
-        expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-        //only manipulate by server not by client/user
-        secure: false,
-        httpOnly: true,
-      };
-      const token = jwt.sign({ _id: CreatedUser._id }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-      });
-      return res
-        .cookie("accessToken", token, options)
-        .status(200)
-        .json({ message: "User Registered sucessfully", CreatedUser });
-    }
+    const { phone, otp } = req.body;
+    if (!phone || phone.length !== 10 || !otp)
+      return res.status(400).json({ message: "Invalid input" });
+
+    // Get OTP data from Redis
+    const data = await redisClient.get(`otp:${phone}`);
+    if (!data) return res.status(400).json({ message: "OTP expired" });
+
+    const { otp: hashedOTP } = JSON.parse(data);
+
+    const isMatch = await bcryptjs.compare(otp, hashedOTP);
+    if (!isMatch) return res.status(400).json({ message: "Invalid OTP" });
+    await redisClient.del(`otp:${phone}`);
+    // Find user or create one if not exists
+    let user = await User.findOne({ phone }).select("-password");
+
+    const options = {
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      httpOnly: true,
+    };
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    await redisClient.setEx(`auth:${user._id}`, 900, token);
+
+    return res
+      .cookie("accessToken", token, options)
+      .status(200)
+      .json({ message: "Login Successful", user });
   } catch (error) {
-    console.log("Error: " + error.message);
+    console.error("OTP Verification Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Login with password
+ * @route   POST /auth/login-password
+ * @access  Public
+ */
+export const loginWithPassword = async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+    if (!phone || phone.length !== 10 || !password)
+      return res.status(400).json({ message: "Invalid input" });
+
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.password)
+      return res.status(403).json({ message: "Set a password first" });
+
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    const options = {
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      httpOnly: true,
+    };
+    const safeUser = user.toObject(); // Convert to plain object
+    delete safeUser.password;
+    await redisClient.setEx(`auth:${user._id}`, 900, token);
+    return res
+      .cookie("accessToken", token, options)
+      .status(200)
+      .json({ message: "Login Successful", user:safeUser });
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Logout user
+ * @route   POST /auth/logout
+ * @access  Public
+ */
+export const logoutUser = async (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+
+    if (!token) return res.status(200).json({ message: "Already logged out" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded._id;
+    await redisClient.del(`auth:${userId}`);
+
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

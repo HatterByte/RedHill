@@ -1,11 +1,9 @@
-import express from 'express';
-const router = express.Router();
-import dotenv from 'dotenv';
-import { loginUser, logoutUser } from '../controllers/userController.js';
-import auth from '../middleware/auth.js';
-dotenv.config()
+import express from "express";
+import { getUserProfile } from "../controllers/userController.js";
+import auth from "../middleware/auth.js";
 
-router.post('/login',loginUser );
-router.get('/logout',logoutUser);
+const router = express.Router();
+
+router.get("/profile", auth, getUserProfile);
 
 export default router;

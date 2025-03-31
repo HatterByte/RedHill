@@ -1,33 +1,51 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import redisClient from "../config/redis.js";
 
 const auth = async (req, res, next) => {
   try {
     const token = req.cookies.accessToken;
-
     if (!token) {
-      req.loggedIn = false; // Mark as not logged in
-      return next(); // Proceed without blocking
+      req.loggedIn = false;
+      return next();
+    }
+
+    const decoded = jwt.decode(token);
+    if (!decoded || !decoded._id) {
+      res.clearCookie("accessToken");
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    const userId = decoded._id;
+    const cachedToken = await redisClient.get(`auth:${userId}`);
+    if (!cachedToken || cachedToken !== token) {
+      res.clearCookie("accessToken");
+      return res.status(401).json({ message: "Session expired or invalid" });
     }
 
     // Verify the token
-    const isVerified = await jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ _id: isVerified._id }).select(
-      "-password"
-    );
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      res.clearCookie("accessToken");
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       res.clearCookie("accessToken");
-      req.loggedIn = false; // Mark as not logged in
-      return next(); // Proceed without blocking
+      await redisClient.del(`auth:${userId}`);
+      req.loggedIn = false;
+      return next();
     }
 
-    req.user = user; // Attach user data to the request
-    req.loggedIn = true; // Mark as logged in
-    next(); // Proceed to the next middleware/handler
+    req.user = user;
+    req.loggedIn = true;
+    next();
   } catch (error) {
-    req.loggedIn = false; // In case of any error, treat as not logged in
-    next(); // Proceed without blocking
+    console.error("Auth Middleware error:", error);
+    req.loggedIn = false;
+    next();
   }
 };
 
