@@ -4,7 +4,7 @@ import { axiosInstance } from "../utils/axios";
 const initialState = {
     loading: false,
     user: null,
-    isAuthenticated: true,
+    isAuthenticated: false,
 };
 
 const authReducer = (state = initialState, action) => {

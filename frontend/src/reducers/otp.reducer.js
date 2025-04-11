@@ -1,4 +1,4 @@
-import { GENERATE_OTP_FAILURE,GENERATE_OTP_REQUEST,GENERATE_OTP_SUCCESS,VERIFY_OTP_FAILURE,VERIFY_OTP_REQUEST,VERIFY_OTP_SUCCESS } from "../utils/types";
+import { GENERATE_OTP_FAILURE,GENERATE_OTP_REQUEST,GENERATE_OTP_RESET,GENERATE_OTP_SUCCESS,VERIFY_OTP_FAILURE,VERIFY_OTP_REQUEST,VERIFY_OTP_SUCCESS } from "../utils/types";
 
 const initialState = {
     otpGenerating: false,
@@ -29,6 +29,13 @@ const otpReducer = (state = initialState, action) => {
                 ...state,
                 otpGenerating: false,
                 otpGenerated: false,
+            };
+        case GENERATE_OTP_RESET:
+            return {
+                ...state,
+                otpGenerating: false,
+                otpGenerated: false,
+                error: null,
             };
         case VERIFY_OTP_REQUEST:
             return {

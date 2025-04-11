@@ -1,11 +1,14 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import data from '../../assets/categoryData.json'
 import RecaptchaButton from '../../utils/Recaptcha.jsx'
-import {connect,useDispatch} from 'react-redux'
-import {generateOtp} from '../../actions/auth.actions'
+import { connect, useDispatch } from 'react-redux'
+import { generateOtp, verifyOtp } from '../../actions/auth.actions'
 import { getUser } from '../../actions/auth.actions'
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Trains = (props) => {
+    // console.log("Trains")
+    const dispatch = useDispatch()
     const [disabled, setDisabled] = useState(true)
     const [toggle, setToggle] = useState(false)
     const [otp, setOtp] = useState('')
@@ -22,21 +25,19 @@ const Trains = (props) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
         return value;
     };
-    function generateOTP() {
+    function handleGenerateOTP() {
         if (formData.phone.length !== 10) {
             alert("enter a valid Phone");
-
             return;
         }
-        let ans = Math.floor(1000 + Math.random() * 9000).toString();
-        alert(`OTP is ${ans}`)
-        setMasterOtp(ans)
-        setToggle(true)
+        dispatch(generateOtp(formData.phone));
     }
     const check = () => {
-        if (masterOtp == otp) {
-            setDisabled(false)
+        if (otp.length !== 6) {
+            alert("enter a valid OTP");
+            return;
         }
+        dispatch(verifyOtp(formData.phone, otp))
 
     }
 
@@ -57,9 +58,9 @@ const Trains = (props) => {
         e.preventDefault();
         console.log(formData);
     }
-    if(props.auth.loading) {
-        return  (
-        <>Loading...</>
+    if (props.auth.loading) {
+        return (
+            <>Loading...</>
         )
     }
     useEffect(() => {
@@ -67,7 +68,7 @@ const Trains = (props) => {
             setDisabled(false)
         }
         else {
-            if(disabled===false){
+            if (disabled === false) {
                 setFormData({
                     phone: '',
                     pnr: '',
@@ -81,6 +82,11 @@ const Trains = (props) => {
             setDisabled(true)
         }
     }, [props.auth])
+    useEffect(() => {
+        if (props.otp.otpGenerated) {
+            setToggle(true)
+        }
+    }, [props.otp])
 
     return (
         <>
@@ -100,7 +106,7 @@ const Trains = (props) => {
                     </div>
                     <div className="flex gap-4 mt-1">
                         <input type="tel" inputMode="numeric" pattern="[0-9]*" value={formData.phone} onChange={(e) => { setFormData({ ...formData, phone: (handleChange(e)) }) }} className='w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-2xl flex items-center  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]' />
-                        {!toggle && <button type='button' className='bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ' onClick={(e) => { e.preventDefault(); generateOTP() }}>Send OTP</button>}
+                        {!toggle && <button type='button' className='bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ' onClick={(e) => { e.preventDefault(); handleGenerateOTP() }}>Send OTP</button>}
                     </div>
                     {toggle && <>
 
@@ -112,7 +118,7 @@ const Trains = (props) => {
                         <div className="flex gap-15 mt-1">
                             <input type="text" inputMode="numeric" pattern="[0-9]*" value={otp} onChange={(e) => { setOtp(handleChange(e)) }} className='w-2/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-2xl flex items-center  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]' />
 
-                            <button type='submit' className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ${otp.length != 4 ? "opacity-[0.6]" : ""}`}>Submit</button>
+                            <button type='submit' className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ${otp.length != 6 ? "opacity-[0.6]" : ""}`}>Submit</button>
                             <button type='button' className={`bg-[#75002b] w-40 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out `} onClick={(e) => { e.preventDefault(); generateOTP() }}>Resend OTP</button>
                         </div>
 
@@ -120,9 +126,9 @@ const Trains = (props) => {
                 </form>
             }
 
-            <form className={`mt-6 relative ${disabled ? "opacity-[0.6]" : ""}`} onSubmit={(e) =>{handleSubmit(e)}}>
+            <form className={`mt-6 relative ${disabled ? "opacity-[0.6]" : ""}`} onSubmit={(e) => { handleSubmit(e) }}>
                 {disabled && <>
-                    <div className="h-full w-full z-10 bg-black opacity-0 absolute"></div>
+                    <div className="h-full w-full z-2 bg-black opacity-0 absolute"></div>
                 </>}
                 <div className="w-full">
                     <div className="flex gap-0.5">
@@ -136,10 +142,10 @@ const Trains = (props) => {
                     <div className="w-[48%] mt-3">
                         <div className="flex gap-0.5">
                             <div className="text-[#7c7c7c] text-lg font-medium">Type</div>
-                           
+
                         </div>
 
-                        <select className={`w-full border-[1px] h-13 border-[#d9d9d9] p-2 text-xl  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1`} value={formData.type} onChange={(e) => { setFormData({ ...formData, type: e.target.value,subtype:'' }); }} >
+                        <select className={`w-full border-[1px] h-13 border-[#d9d9d9] p-2 text-xl  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1`} value={formData.type} onChange={(e) => { setFormData({ ...formData, type: e.target.value, subtype: '' }); }} >
                             <option value="" disabled className='text-[#7c7c7c]'>--select--</option>
                             {Object.keys(data).map((category, index) => (
                                 <option key={index} value={category}>{category}</option>
@@ -147,11 +153,11 @@ const Trains = (props) => {
                         </select>
 
                     </div>
-                    <div className={`w-[48%] mt-3 relative ${!disabled &&!formData.type ? "opacity-[0.6]" : ""}`}>
-                        {!disabled &&!formData.type && <div className="h-full w-full z-10 bg-black opacity-0 absolute"></div>}
+                    <div className={`w-[48%] mt-3 relative ${!disabled && !formData.type ? "opacity-[0.6]" : ""}`}>
+                        {!disabled && !formData.type && <div className="h-full w-full z-2 bg-black opacity-0 absolute"></div>}
                         <div className="flex gap-0.5">
                             <div className="text-[#7c7c7c] text-lg font-medium">Sub-Type</div>
-                         
+
                         </div>
 
                         <select className='w-full border-[1px] h-13 border-[#d9d9d9] p-2 text-xl  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1' value={formData.subtype} onChange={(e) => { setFormData({ ...formData, subtype: e.target.value }); }} >
@@ -177,7 +183,7 @@ const Trains = (props) => {
                                 Browse
                                 <input
                                     type="file"
-                                    className="absolute  w-25 h-13 z-50  left-0 top-0 opacity-0 cursor-pointer"
+                                    className="absolute  w-25 h-13 z-1  left-0 top-0 opacity-0 cursor-pointer"
                                     onChange={handleFileChange}
                                     accept=".pdf,.jpg,.jpeg,.png,.mp4"
                                     multiple
@@ -237,7 +243,10 @@ const Trains = (props) => {
                 </div>
 
                 <div className="flex w-full justify-end mt-10 ">
-                    <RecaptchaButton />                
+                    <ReCAPTCHA
+                        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                        onChange={(e) => { console.log(e) }}
+                    />
                     <button type='submit' className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out `}>Submit</button>
                     <button type='button' className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ml-6 `} onClick={(e) => {
                         e.preventDefault(); setFormData({
@@ -247,10 +256,7 @@ const Trains = (props) => {
                             subtype: '',
                             media: [],
                             description: '',
-                        }); setDisabled(true);
-                        setOtp('');
-                        setMasterOtp('');
-                        setToggle(false);
+                        });
                     }}>Reset</button>
 
                 </div>

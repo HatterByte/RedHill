@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react'
-export default function Navbar() {
+export default function Navbar({setOpenLogin,setToggleLogin}) {
     useEffect(() => {
         // Prevent duplicate script loading
         if (!document.querySelector("#google-translate-script")) {
@@ -59,8 +59,8 @@ export default function Navbar() {
 
                 </div>
                 <div className="endThing flex items-center  gap-2">
-                    <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10'>Login</button>
-                    <button type='button' className='bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10'>Sign Up</button>
+                    <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e)=>{e.preventDefault();setOpenLogin(true);}}>Login</button>
+                    <button type='button' className='bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e)=>{e.preventDefault();setToggleLogin(true);setOpenLogin(true)}}>Sign Up</button>
 
                     <style>
                         {`
