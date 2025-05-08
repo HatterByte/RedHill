@@ -1,14 +1,36 @@
-import React from 'react'
+import React,{useState} from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
+import { useDispatch } from 'react-redux';
+import { loginWithPassword } from '../../actions/auth.actions';
 
 
 const LoginWithPassword = ({formData,reset,setFormData,setPage}) => {
+    const dispatch = useDispatch();
+    const [verified,setVerified]=useState(false);
+    const handleSubmit = (e) => {
+        console.log("formData",formData);
+        e.preventDefault();
+        if(!formData.phone|| formData.phone.length != 10) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+        if(!formData.password|| formData.password.length < 6) {
+            alert("Please enter a valid password.");
+            return;
+        }
+        if(!verified) {
+            alert("Please verify the reCAPTCHA.");
+            return;
+        }
+        dispatch(loginWithPassword(formData.phone,formData.password));
+        // console.log("Logging in with phone:", formData.phone, formData.password);
+    };
     const handleChangeTruncate = (e) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
         return value;
     };
     return (
-        <form className='h-full'>
+        <form className='h-full' onSubmit={(e)=>handleSubmit(e)}>
             <div className="flex flex-col mt-8 h-full">
                 {/* Fixed onChange handler by removing e.preventDefault() */}
                 <input 
@@ -40,10 +62,17 @@ const LoginWithPassword = ({formData,reset,setFormData,setPage}) => {
                     Forget Password
                 </div>
             </div>
+            <div className="mt-4">
+                <ReCAPTCHA
+                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    onChange={(e) => { if (e) { setVerified(true) } }}
+                />
+            </div>
 
             <button 
                 type='submit' 
                 className='bg-[#75002b] w-full text-white rounded-md h-9 mt-12 font-bold text-xl cursor-pointer'
+                
             >
                 Submit
             </button>

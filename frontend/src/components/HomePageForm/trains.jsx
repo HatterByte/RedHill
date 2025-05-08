@@ -58,11 +58,11 @@ const Trains = (props) => {
         e.preventDefault();
         console.log(formData);
     }
-    if (props.auth.loading) {
-        return (
-            <>Loading...</>
-        )
-    }
+    // if (props.auth.loading) {
+    //     return (
+    //         <>Loading...</>
+    //     )
+    // }
     useEffect(() => {
         if (props.auth.isAuthenticated) {
             setDisabled(false)

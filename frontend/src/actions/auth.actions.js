@@ -1,4 +1,4 @@
-import { GENERATE_OTP_FAILURE,GENERATE_OTP_REQUEST,GENERATE_OTP_RESET,GENERATE_OTP_SUCCESS,VERIFY_OTP_FAILURE,VERIFY_OTP_REQUEST,VERIFY_OTP_SUCCESS,GET_USER_FAILURE,GET_USER_REQUEST,GET_USER_SUCCESS } from "../utils/types";
+import { GENERATE_OTP_FAILURE,GENERATE_OTP_REQUEST,GENERATE_OTP_RESET,GENERATE_OTP_SUCCESS,VERIFY_OTP_FAILURE,VERIFY_OTP_REQUEST,VERIFY_OTP_SUCCESS,GET_USER_FAILURE,GET_USER_REQUEST,GET_USER_SUCCESS,LOGIN_FAILURE,LOGIN_REQUEST,LOGIN_RESET,LOGIN_SUCCESS } from "../utils/types";
 import { axiosInstance } from "../utils/axios";
 
 const getUserRequest = () => {
@@ -110,6 +110,54 @@ export const verifyOtp = (phone,otp)=>async (dispatch)=>{
         else{
             dispatch(verifyOtpFailure("Something went wrong"));
         }
-        dispatch(verifyOtpFailure());
+        // dispatch(verifyOtpFailure());
     }
 }
+
+const loginRequest = () => {
+    return {
+        type: LOGIN_REQUEST,
+    };
+}
+const loginSuccess = (payload) => {
+    return {
+        type: LOGIN_SUCCESS,
+        payload: payload,
+    };
+}
+const loginFailure = (error) => {
+    return {
+        type: LOGIN_FAILURE,
+        payload: error,
+    };
+}
+
+export const loginReset = () => {
+    return {
+        type: LOGIN_RESET,
+    };
+}
+
+export const loginWithPassword = (phone,password)=>async (dispatch)=>{
+    try {
+        dispatch(loginRequest());
+        const response = await axiosInstance.post("/auth/login-password",{phone,password});
+        if(response.status === 200){
+            dispatch(loginSuccess(payload));
+            // dispatch(getUserSuccess(response.data));
+        }else{
+            dispatch(loginFailure());
+        }
+    } catch (error) {
+        if(error.response?.status === 400){
+            dispatch(loginFailure("Invalid OTP"));
+        }
+        else if(error.response?.status === 500){
+            dispatch(loginFailure("Server Error"));
+        }
+        else{
+            dispatch(loginFailure("Something went wrong"));
+        }
+    }
+}
+
