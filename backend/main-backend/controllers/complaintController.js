@@ -30,10 +30,10 @@ export const registerComplaint = async (req, res) => {
 
     let userPhone = phone;
     let userName = name;
-    let userId = null;  // Store MongoDB _id of the user
+    let userId = null; 
 
     if (isLoggedIn && req.user) {
-      userId = req.user._id;  // Use MongoDB _id
+      userId = req.user._id;
       userPhone = userPhone || req.user.phone;
       userName = userName || req.user.name;
     } else if (!phone) {
