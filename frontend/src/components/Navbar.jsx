@@ -1,5 +1,8 @@
-import React,{useEffect} from 'react'
-export default function Navbar({setOpenLogin,setToggleLogin}) {
+import React,{useEffect,useState} from 'react'
+import Auth from './auth/Auth'
+export default function Navbar() {
+        const [openLogin, setOpenLogin] = useState(false);
+    const [toggleLogin, setToggleLogin] = useState(false);
     useEffect(() => {
         // Prevent duplicate script loading
         if (!document.querySelector("#google-translate-script")) {
@@ -28,6 +31,7 @@ export default function Navbar({setOpenLogin,setToggleLogin}) {
       }, []);
     return (
         <>
+            {openLogin&&<Auth setOpenLogin={setOpenLogin} toggleLogin={toggleLogin} setToggleLogin={setToggleLogin}/>}
             <div className="w-full flex justify-around items-center px-1 lg:py-4 bg-white flex-wrap md:flex-wrap lg:flex-nowrap">
                 <div className="leftThing flex items-center p-1">
                     <div className="leftImg bg-">

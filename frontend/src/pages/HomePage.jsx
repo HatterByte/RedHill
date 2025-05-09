@@ -6,13 +6,8 @@ import Footer from '../components/Footer'
 import Auth from '../components/auth/Auth'
 const HomePage = () => {
     const [activeTab, setActiveTab] = useState('train');
-    const [openLogin, setOpenLogin] = useState(false);
-    const [toggleLogin, setToggleLogin] = useState(false);
-    console.log("Hello Mihir")
     return (
-        <div className="h-auto min-h-screen w-full flex flex-col">
-            {openLogin&&<Auth setOpenLogin={setOpenLogin} toggleLogin={toggleLogin} setToggleLogin={setToggleLogin}/>}
-            <ResponsiveNavbar setOpenLogin={setOpenLogin} setToggleLogin={setToggleLogin} />
+            <>
             <div className="flex flex-col-reverse items-center min-[1150px]:items-start min-[1150px]:flex-row min-[1150px]:justify-between p-4 min-w-[1250px]:p-10 w-full h-auto min-h-full">
                 <div className="flex flex-wrap gap-y-2 min-[1150px]:w-1/3 min-[1150px]:h-1/2 mt-20">
                     <div className="w-1/4 max-sm:w-1/3 flex flex-col items-center justify-center">
@@ -58,10 +53,11 @@ const HomePage = () => {
 
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
+            </>
 
 
-        </div>
+       
         
 
     )

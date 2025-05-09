@@ -1,12 +1,23 @@
 import React from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
-
+import { generateOtp,verifyOtp } from '../../actions/auth.actions';
+import { useDispatch } from 'react-redux';
 
 const ForgotPassword = ({formData,setFormData,setPage,reset}) => {
+    const dispatch = useDispatch();
     const handleChangeTruncate = (e) => {
         const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
         return value;
     };
+    const handleGenerateOTP = () => {
+            if(!formData.phone|| formData.phone.length != 10) {
+                alert("Please enter a valid phone number.");
+                return;
+            }
+            else dispatch(generateOtp(formData.phone));
+            
+            console.log("Generating OTP for:", formData.phone);
+        };
     return (
         <form className='h-full'>
             <div className="flex flex-col mt-8 h-full">
@@ -26,6 +37,7 @@ const ForgotPassword = ({formData,setFormData,setPage,reset}) => {
                 <button 
                     type='button' 
                     className='bg-[#75002b] w-full text-white rounded-md h-9 mt-4 font-medium text-xl cursor-pointer'
+                    onClick={handleGenerateOTP}
                 >
                     Generate OTP
                 </button>

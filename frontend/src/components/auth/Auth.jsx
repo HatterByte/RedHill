@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
 import LoginModal from './LoginModal';
+import CreateAccount from './CreateAccount';
 
 const Auth = ({ setOpenLogin,toggleLogin,setToggleLogin }) => {
     // const handleChangeTruncate = (e) => {
@@ -30,7 +31,9 @@ const Auth = ({ setOpenLogin,toggleLogin,setToggleLogin }) => {
 
                     {!toggleLogin&&
                         <LoginModal setToggleLogin={setToggleLogin}/>
-                        
+                    }
+                    {toggleLogin&&
+                        <CreateAccount reset={()=>{setToggleLogin(false)}}/>
                     }
                     
 
