@@ -25,7 +25,6 @@ function App(props) {
             <Route path="complaints" element={<ComplaintTable/>} />
             {/* <Route path="contact" element={<ContactPage />} /> */}
           </Route>
-
         </Routes>
       </BrowserRouter>
       {/* </div> */}

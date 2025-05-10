@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import Auth from './auth/Auth'
 export default function Navbar() {
-        const [openLogin, setOpenLogin] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false);
     const [toggleLogin, setToggleLogin] = useState(false);
     useEffect(() => {
         // Prevent duplicate script loading
