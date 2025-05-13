@@ -1,43 +1,57 @@
-import React,{useEffect,useState} from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Auth from './auth/Auth'
-export default function Navbar() {
+import { connect } from 'react-redux';
+import NavbarUserModal from './User/NavbarUserModal';
+import { useNavigate } from 'react-router-dom';
+function Navbar(props) {
     const [openLogin, setOpenLogin] = useState(false);
     const [toggleLogin, setToggleLogin] = useState(false);
+    const [userModal, setUserModal] = useState(false);
+    const navigate = useNavigate();
     useEffect(() => {
         // Prevent duplicate script loading
         if (!document.querySelector("#google-translate-script")) {
-          const script = document.createElement("script");
-          script.id = "google-translate-script";
-          script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-          script.async = true;
-          document.body.appendChild(script);
+            const script = document.createElement("script");
+            script.id = "google-translate-script";
+            script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+            script.async = true;
+            document.body.appendChild(script);
         }
-    
+
         // Ensure the function is globally available
         window.googleTranslateElementInit = () => {
-          if (!window.google || !window.google.translate) return;
-          new window.google.translate.TranslateElement(
-            { pageLanguage: "en",
-                includedLanguages: "en,hi,bn,mr,gu,kn,ml,pa,or,sa,ta,te,ur,mai", // Only these languages
-             },
-            "google_translate_element"
-          );
+            if (!window.google || !window.google.translate) return;
+            new window.google.translate.TranslateElement(
+                {
+                    pageLanguage: "en",
+                    includedLanguages: "en,hi,bn,mr,gu,kn,ml,pa,or,sa,ta,te,ur,mai", // Only these languages
+                },
+                "google_translate_element"
+            );
         };
-    
+
         // If script is already loaded, manually initialize
         if (window.google && window.google.translate) {
-          window.googleTranslateElementInit();
+            window.googleTranslateElementInit();
         }
-      }, []);
+    }, []);
+    useEffect(() => {
+        if (props.user) {
+            setOpenLogin(false);
+            setToggleLogin(false);
+        }
+
+    }, [props.user])
+
     return (
         <>
-            {openLogin&&<Auth setOpenLogin={setOpenLogin} toggleLogin={toggleLogin} setToggleLogin={setToggleLogin}/>}
+            {openLogin && <Auth setOpenLogin={setOpenLogin} toggleLogin={toggleLogin} setToggleLogin={setToggleLogin} />}
             <div className="w-full flex justify-around items-center px-1 lg:py-4 bg-white flex-wrap md:flex-wrap lg:flex-nowrap">
                 <div className="leftThing flex items-center p-1">
                     <div className="leftImg bg-">
                         <img src="https://railmadad.indianrailways.gov.in/madad/final/images/logog20.png" alt="" className=' h-14 xl:h-16 w-40' />
                     </div>
-                    <div className="Headingg flex flex-col ml-3 max-w-[200px] lg:max-w-[350px]">
+                    <div className="Headingg flex flex-col ml-3 max-w-[200px] lg:max-w-[350px] cursor-pointer" onClick={(e) => { e.preventDefault(); navigate("/") }}>
                         <div className="RailMadad flex text-[#75002b] text-3xl xl:text-5xl font-bold">RailMadad</div>
                         <div className="text-black flex md:font-medium md-text-md text-sm ">For Inquiry, Assistance & Grievance Redressal</div>
                     </div>
@@ -62,9 +76,43 @@ export default function Navbar() {
                     <div className="text-sm md:text-lg xl:text-xl ml-2 leading-tight">for Security/Medical Assistance</div>
 
                 </div>
-                <div className="endThing flex items-center  gap-2">
-                    <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e)=>{e.preventDefault();setOpenLogin(true);}}>Login</button>
-                    <button type='button' className='bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e)=>{e.preventDefault();setToggleLogin(true);setOpenLogin(true)}}>Sign Up</button>
+                <div className="endThing flex items-center  gap-4">
+                    {!props.isAuthenticated ?
+                        <>
+                            <button
+                                type="button"
+                                className="max-w-55 relative flex justify-center items-center h-8 text-[#65002b] rounded-sm text-lg md:h-10 active:outline-0"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    console.log("clicked111");
+                                    // setUserModal(!userModal);
+                                    setUserModal(true);
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#65002bda"
+                                    className="mr-2 w-4 h-5 shrink-0 cursor-pointer"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" /></svg>
+                                <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[100px] md:max-w-[125px] cursor-pointer">
+                                    Mihir Bairathi
+                                </span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 320 512"
+                                    fill="#65002bda"
+                                    className="ml-2 w-4 h-4 shrink-0 cursor-pointer"
+                                >
+                                    <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
+                                </svg>
+                                {userModal && <NavbarUserModal userModal={userModal} setUserModal={setUserModal}/>}
+                            </button>
+
+                        </>
+                        :
+                        <>
+                            <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e) => { e.preventDefault(); setOpenLogin(true); }}>Login</button>
+                            <button type='button' className='bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e) => { e.preventDefault(); setToggleLogin(true); setOpenLogin(true) }}>Sign Up</button>
+
+                        </>}
+
 
                     <style>
                         {`
@@ -105,3 +153,11 @@ export default function Navbar() {
         </>
     );
 }
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.auth.user,
+        isAuthenticated: state.auth.isAuthenticated,
+    };
+};
+export default connect(mapStateToProps)(Navbar);
