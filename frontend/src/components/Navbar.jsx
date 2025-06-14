@@ -42,7 +42,9 @@ function Navbar(props) {
         }
 
     }, [props.user])
-
+    useEffect(() => {
+        console.log(userModal);
+    }, [userModal]);
     return (
         <>
             {openLogin && <Auth setOpenLogin={setOpenLogin} toggleLogin={toggleLogin} setToggleLogin={setToggleLogin} />}
@@ -77,7 +79,7 @@ function Navbar(props) {
 
                 </div>
                 <div className="endThing flex items-center  gap-4">
-                    {!props.isAuthenticated ?
+                    {props.isAuthenticated ?
                         <>
                             <button
                                 type="button"
@@ -108,7 +110,7 @@ function Navbar(props) {
                         </>
                         :
                         <>
-                            <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e) => { e.preventDefault(); setOpenLogin(true); }}>Login</button>
+                            <button type='button' className='bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e) => { e.preventDefault(); setToggleLogin(false); setOpenLogin(true); }}>Login</button>
                             <button type='button' className='bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10 cursor-pointer' onClick={(e) => { e.preventDefault(); setToggleLogin(true); setOpenLogin(true) }}>Sign Up</button>
 
                         </>}

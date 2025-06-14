@@ -6,13 +6,16 @@ import HomePage from './pages/HomePage';
 import { getUser } from './actions/auth.actions';
 import Layout from './utils/Layout';
 import ComplaintTable from './components/User/ComplaintTable';
+import { useDispatch } from 'react-redux';
+// import { get } from 'mongoose';
 
 function App(props) {
+  const dispatch = useDispatch();
   useEffect(() => {
     console.log("App mounted");
-    getUser();
+    dispatch(getUser());
   }
-    , []);
+    , [getUser]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 // import React from 'react'
 import React,{use, useState} from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
-import { generateOtp,verifyOtp } from '../../actions/auth.actions';
+import { generateOtp,verifyOtp,signUp } from '../../actions/auth.actions';
 import { useDispatch } from 'react-redux';
 
 const CreateAccount = ({reset}) => {
@@ -33,6 +33,10 @@ const CreateAccount = ({reset}) => {
                 alert("Please enter a valid phone number.");
                 return;
             }
+            if(formData.password!== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
             if(!formData.otp|| formData.otp.length != 6) {
                 alert("Please enter a valid OTP.");
                 return;
@@ -42,6 +46,7 @@ const CreateAccount = ({reset}) => {
                 return;
             }
             // dispatch(verifyOtp(formData.phone,formData.otp));
+            dispatch(signUp(formData.name,formData.phone,formData.password,formData.otp));
             console.log("Verifying OTP for:", formData.phone, formData.otp);
         };
   return (
