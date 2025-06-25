@@ -25,32 +25,42 @@ export const registerComplaint = async (req, res) => {
     } = req.body;
 
     if (!pnr) {
-      return res.status(400).json({ success: false, message: "PNR is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "PNR is required" });
     }
 
     let userPhone = phone;
     let userName = name;
-    let userId = null; 
+    let userId = null;
 
     if (isLoggedIn && req.user) {
       userId = req.user._id;
       userPhone = userPhone || req.user.phone;
       userName = userName || req.user.name;
     } else if (!phone) {
-      return res.status(400).json({ success: false, message: "Phone number is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Phone number is required" });
     }
 
     if (!description && media.length === 0 && (!type || !subtype)) {
       return res.status(400).json({
         success: false,
-        message: "Either description, media, or type and subtype must be provided",
+        message:
+          "Either description, media, or type and subtype must be provided",
       });
     }
 
     const pnrDetails = await fetchPNRDetails(pnr);
 
     if (!pnrDetails.success) {
-      return res.status(400).json({ success: false, message: "Invalid PNR or unable to fetch PNR details" });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Invalid PNR or unable to fetch PNR details",
+        });
     }
 
     const { trainCode, trainName, trainDepartureDate } = pnrDetails;
@@ -67,9 +77,10 @@ export const registerComplaint = async (req, res) => {
 
     const lastComplaint = await Complaints.findOne().sort({ complaintId: -1 });
 
-    const complaintId = lastComplaint && lastComplaint.complaintId
-      ? Number(lastComplaint.complaintId) + 1
-      : 1000;  // Start from 1000 if no complaints exist
+    const complaintId =
+      lastComplaint && lastComplaint.complaintId
+        ? Number(lastComplaint.complaintId) + 1
+        : 1000; // Start from 1000 if no complaints exist
 
     // console.log("Generated complaintId:", complaintId);
 
@@ -112,10 +123,15 @@ export const registerComplaint = async (req, res) => {
     });
   } catch (error) {
     console.error("Error registering complaint:", error);
-    return res.status(500).json({ success: false, message: "Failed to register complaint", error: error.message });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "Failed to register complaint",
+        error: error.message,
+      });
   }
 };
-
 
 /**
  * Get complaint details by MongoDB `_id`
@@ -143,7 +159,6 @@ export const getComplaintById = async (req, res) => {
       });
     }
 
-
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -152,10 +167,14 @@ export const getComplaintById = async (req, res) => {
     }
 
     // Check if the logged-in user is the complaint owner or an admin
-    if (req.user._id.toString() !== complaint.user_Id.toString() && !req.user.isAdmin) {
+    if (
+      req.user._id.toString() !== complaint.user_Id.toString() &&
+      !req.user.isAdmin
+    ) {
       return res.status(403).json({
         success: false,
-        message: "Access denied. You are not authorized to view this complaint.",
+        message:
+          "Access denied. You are not authorized to view this complaint.",
       });
     }
 
@@ -172,7 +191,6 @@ export const getComplaintById = async (req, res) => {
     });
   }
 };
-  
 
 /**
  * Get all complaints for a user
@@ -206,12 +224,15 @@ export const getUserComplaints = async (req, res) => {
     if (req.user._id.toString() !== userId && !req.user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Access denied. You are not authorized to view these complaints.",
+        message:
+          "Access denied. You are not authorized to view these complaints.",
       });
     }
 
     // Fetch complaints for the user
-    const complaints = await Complaints.find({ user_Id: userId }).sort({ createdAt: -1 });
+    const complaints = await Complaints.find({ user_Id: userId }).sort({
+      createdAt: -1,
+    });
 
     return res.status(200).json({
       success: true,
@@ -243,8 +264,7 @@ export const getAllComplaints = async (req, res) => {
     }
 
     // Optional filtering
-    const { type, subtype, resolved, severity, startDate, endDate } =
-      req.query;
+    const { type, subtype, resolved, severity, startDate, endDate } = req.query;
 
     const filter = {};
 

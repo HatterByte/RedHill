@@ -1,12 +1,13 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/auth.actions';
 // import { set } from 'mongoose';
 
 const NavbarUserModal = ({ userModal, setUserModal }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
     return (
         <>
             <div className="w-65 h-45 bg-white absolute left-0 top-12 z-15">
@@ -15,7 +16,7 @@ const NavbarUserModal = ({ userModal, setUserModal }) => {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#000000d8"
                             className="w-5 h-5 shrink-0"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" /></svg>
                     </div>
-                    <div className="text-black text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-[155px] font-medium">MIHIR BAIRATHI </div>
+                    <div className="text-black text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-[155px] font-medium">{user?.name || "User"}</div>
                 </div>
                 <div className="w-64 h-10 text-base text-black flex justify-start items-center gap-2 px-4 hover:bg-[#EFE4E855] hover:text-[#75002B] cursor-pointer transition duration-400 ease-in-out">
                     <svg
