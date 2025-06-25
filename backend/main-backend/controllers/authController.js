@@ -124,7 +124,7 @@ export const registerUser = async (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    await redisClient.setEx(`auth:${user._id}`, 900, token);
+    await redisClient.setEx(`auth:${user._id}`, 9000, token);
     const safeUser = user.toObject(); // Convert to plain object
     delete safeUser.password;
     return res
@@ -168,7 +168,7 @@ export const verifyOTPLogin = async (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    await redisClient.setEx(`auth:${user._id}`, 900, token);
+    await redisClient.setEx(`auth:${user._id}`, 9000, token);
 
     return res
       .cookie("accessToken", token, options)
@@ -211,7 +211,7 @@ export const loginWithPassword = async (req, res) => {
     };
     const safeUser = user.toObject(); // Convert to plain object
     delete safeUser.password;
-    await redisClient.setEx(`auth:${user._id}`, 900, token);
+    await redisClient.setEx(`auth:${user._id}`, 9000, token);
     return res
       .cookie("accessToken", token, options)
       .status(200)

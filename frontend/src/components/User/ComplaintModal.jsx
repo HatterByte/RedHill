@@ -14,7 +14,10 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
 
   return (
     <>
-        <div className="fixed w-screen h-screen bg-black opacity-50 top-0 left-0 z-12" onClick={()=>setSelectedComplaint(null)}></div>
+      <div
+        className="fixed w-screen h-screen bg-black opacity-50 top-0 left-0 z-12"
+        onClick={() => setSelectedComplaint(null)}
+      ></div>
 
       <div className="bg-white rounded-lg p-6 w-88 sm:w-94 md:w-110 lg:w-115 shadow-lg z-15 fixed max-h-[90vh] overflow-y-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden custom-scroll">
         <button
@@ -40,7 +43,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
           <strong>Train name:</strong> {complaint.trainName}
         </p>
         <p className="mb-2 items-center">
-          <h2 className="font-bold">Media:</h2>
+          <span className="font-bold">Media:</span>
           <img className="h-36 w-36 mx-auto " src={complaint.media}></img>
         </p>
         <p className="mb-2">
@@ -50,10 +53,10 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
           <strong>Category:</strong> {complaint.category}
         </p>
         <p className="mb-2">
-          <strong>SubCategory:</strong> {complaint.subCategory} 
+          <strong>SubCategory:</strong> {complaint.subCategory}
         </p>
         <p className="mb-4">
-          <strong>Description:</strong> {complaint.description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum est necessitatibus officia ut magnam repudiandae dolor libero laborum nihil. Recusandae, hic distinctio labore ipsum nostrum optio! Vero alias repellendus asperiores.
+          <strong>Description:</strong> {complaint.description || "No Description"}
         </p>
         <p className="mb-4">
           <strong>Date:</strong> {complaint.createdAt}
@@ -61,9 +64,8 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
 
         {/* OTP Section */}
         <p className="mb-2">
-          <strong>OTP To Complete:</strong> {complaint.otp} 
+          <strong>OTP To Complete:</strong> {complaint.otp}
         </p>
-        
       </div>
     </>
   );

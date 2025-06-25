@@ -37,11 +37,21 @@ export const registerComplaint = async (req, res) => {
     if (isLoggedIn && req.user) {
       userId = req.user._id;
       userPhone = userPhone || req.user.phone;
-      userName = userName || req.user.name;
-    } else if (!phone) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Phone number is required" });
+      // Prefer req.user.name if available, then name from request, then 'Anonymous'
+      userName =
+        req.user.name && req.user.name.trim()
+          ? req.user.name
+          : name && name.trim()
+          ? name
+          : "Anonymous";
+    } else {
+      // Not logged in: use name from request or fallback
+      userName = name && name.trim() ? name : "Anonymous";
+      if (!phone) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Phone number is required" });
+      }
     }
 
     if (!description && media.length === 0 && (!type || !subtype)) {
@@ -55,12 +65,10 @@ export const registerComplaint = async (req, res) => {
     const pnrDetails = await fetchPNRDetails(pnr);
 
     if (!pnrDetails.success) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid PNR or unable to fetch PNR details",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid PNR or unable to fetch PNR details",
+      });
     }
 
     const { trainCode, trainName, trainDepartureDate } = pnrDetails;
@@ -123,13 +131,11 @@ export const registerComplaint = async (req, res) => {
     });
   } catch (error) {
     console.error("Error registering complaint:", error);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to register complaint",
-        error: error.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to register complaint",
+      error: error.message,
+    });
   }
 };
 
