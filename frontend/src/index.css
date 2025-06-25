@@ -15,8 +15,16 @@
   }
 }
 
+html {
+  min-width: 320px; /* Minimum width for mobile devices */
+  overflow-x: auto; /* Allow horizontal scrolling if content is wider */
+}
+
 body {
   top: 0px !important;
+  min-width: 320px; /* Match html min-width */
+  width: 100%;
+  overflow-x: hidden; /* Hide horizontal scrollbar on body */
 }
 
 .custom-scroll::-webkit-scrollbar {
