@@ -201,7 +201,7 @@ const Trains = (props) => {
             <div className="text-[#7c7c7c] text-lg font-medium">Mobile No.</div>
             <span className="text-[#f05f40]">*</span>
           </div>
-          <div className="flex gap-4 mt-1">
+          <div className="flex gap-4 mt-1 flex-wrap">
             <input
               type="tel"
               inputMode="numeric"
@@ -210,12 +210,12 @@ const Trains = (props) => {
               onChange={(e) => {
                 setFormData({ ...formData, phone: handleChange(e) });
               }}
-              className="w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-2xl flex items-center  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+              className="w-full sm:w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-xl sm:text-2xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
             />
             {!toggle && (
               <button
                 type="button"
-                className="bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out "
+                className="w-full sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out"
                 onClick={(e) => {
                   e.preventDefault();
                   handleGenerateOTP();
@@ -231,7 +231,7 @@ const Trains = (props) => {
                 <div className="text-[#7c7c7c] text-lg font-medium">OTP</div>
                 <span className="text-[#f05f40]">*</span>
               </div>
-              <div className="flex gap-15 mt-1">
+              <div className="flex gap-2 sm:gap-15 mt-1 flex-wrap">
                 <input
                   type="text"
                   inputMode="numeric"
@@ -240,27 +240,29 @@ const Trains = (props) => {
                   onChange={(e) => {
                     setOtp(handleChange(e));
                   }}
-                  className="w-2/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-2xl flex items-center  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+                  className="w-full sm:w-2/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-xl sm:text-2xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
                 />
 
-                <button
-                  type="submit"
-                  className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ${
-                    otp.length != 6 ? "opacity-[0.6]" : ""
-                  }`}
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  className={`bg-[#75002b] w-40 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out `}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    generateOTP();
-                  }}
-                >
-                  Resend OTP
-                </button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <button
+                    type="submit"
+                    className={`flex-1 sm:flex-none sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out ${
+                      otp.length != 6 ? "opacity-[0.6]" : ""
+                    }`}
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className={`flex-1 sm:flex-none sm:w-40 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      generateOTP();
+                    }}
+                  >
+                    Resend OTP
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -291,11 +293,11 @@ const Trains = (props) => {
             onChange={(e) => {
               setFormData({ ...formData, pnr: handleChange(e) });
             }}
-            className="w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-2xl flex items-center  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+            className="w-full sm:w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-xl sm:text-2xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
           />
         </div>
-        <div className="w-full flex justify-between">
-          <div className="w-[48%] mt-3">
+        <div className="w-full flex flex-col sm:flex-row justify-between gap-4 sm:gap-0">
+          <div className="w-full sm:w-[48%] mt-3">
             <div className="flex gap-0.5">
               <div className="text-[#7c7c7c] text-lg font-medium">Type</div>
             </div>
@@ -318,7 +320,7 @@ const Trains = (props) => {
             </select>
           </div>
           <div
-            className={`w-[48%] mt-3 relative ${
+            className={`w-full sm:w-[48%] mt-3 relative ${
               !disabled && !formData.type ? "opacity-[0.6]" : ""
             }`}
           >
@@ -349,18 +351,18 @@ const Trains = (props) => {
           </div>
         </div>
 
-        <div className="border-[1px] min-h-13 border-[#d9d9d9] text-xl  bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] pl-2 w-5/9 mt-6">
+        <div className="border-[1px] min-h-13 border-[#d9d9d9] text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] p-2 w-full sm:w-5/9 mt-6">
           {formData.media.length === 0 ? (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-gray-500">Select files</span>
               <button
                 type="button"
-                className=" text-center w-25 h-13 cursor-pointer relative rounded-md transition-colors  bg-[#b4b4b4] text-[#fff] hover:bg-[#75002b]"
+                className="w-full sm:w-25 h-13 cursor-pointer relative rounded-md transition-colors bg-[#b4b4b4] text-[#fff] hover:bg-[#75002b]"
               >
                 Browse
                 <input
                   type="file"
-                  className="absolute  w-25 h-13 z-1  left-0 top-0 opacity-0 cursor-pointer"
+                  className="absolute w-full h-full z-1 left-0 top-0 opacity-0 cursor-pointer"
                   onChange={handleFileChange}
                   accept=".pdf,.jpg,.jpeg,.png,.mp4,.mp3,.wav,.aac,.ogg,.m4a,.wma,.flac"
                   multiple
@@ -429,36 +431,38 @@ const Trains = (props) => {
           {`To submit the grievance, please enter one of the following : (a) type and subtype (b) Media (c) Description`}
         </div>
 
-        <div className="flex w-full justify-end mt-10 ">
+        <div className="flex w-full flex-col sm:flex-row justify-end items-center gap-4 mt-10">
           <ReCAPTCHA
             sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
             onChange={(e) => {
               console.log(e);
             }}
           />
-          <button
-            type="submit"
-            className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out `}
-          >
-            Submit
-          </button>
-          <button
-            type="button"
-            className={`bg-[#75002b] w-28 h-13 text-white p-2 rounded-lg cursor-pointer hover:bg-[#f58220] transition-all duration-500 ease-in-out ml-6 `}
-            onClick={(e) => {
-              e.preventDefault();
-              setFormData({
-                phone: "",
-                pnr: "",
-                type: "",
-                subtype: "",
-                media: [],
-                description: "",
-              });
-            }}
-          >
-            Reset
-          </button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              type="submit"
+              className="flex-1 sm:flex-none sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              className="flex-1 sm:flex-none sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormData({
+                  phone: "",
+                  pnr: "",
+                  type: "",
+                  subtype: "",
+                  media: [],
+                  description: "",
+                });
+              }}
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </form>
     </>
