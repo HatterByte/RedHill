@@ -52,8 +52,20 @@ const ComplaintTable = () => {
     );
   }
 
+  // Helper to format date and time
+  const formatDateTime = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    const d = date.toLocaleDateString();
+    const t = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${d} ${t}`;
+  };
+
   return (
-    <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.9)] min-h-[60vh] overflow-x-auto rounded-xl">
+    <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.95)] min-h-[60vh] rounded-2xl shadow-lg p-2 sm:p-6">
       {selectedComplaint && (
         <ComplaintModal
           complaint={selectedComplaint}
@@ -61,37 +73,41 @@ const ComplaintTable = () => {
         />
       )}
       <div className="overflow-x-auto min-h-[60vh] rounded-xl">
-        <table className="min-w-[600px] w-full text-xs sm:text-sm">
-          <thead className="table-header-group bg-[rgba(255,255,255,0.91)] rounded">
-            <tr className="h-12 sm:h-16">
-              <th className="px-2 sm:px-4 py-2 text-left">Ref No.</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Issue Type</th>
-              <th className="px-2 sm:px-4 py-2 text-left">PNR No.</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Status</th>
-              <th className="px-2 sm:px-4 py-2 text-left">Date</th>
+        <table className="min-w-[400px] w-full text-xs sm:text-sm border-separate border-spacing-y-1">
+          <thead className="bg-white/80 rounded-xl">
+            <tr className="h-12 sm:h-14">
+              <th className="px-2 py-2 text-left font-semibold text-[#900b3d]">
+                Ref No.
+              </th>
+              <th className="px-2 py-2 text-left font-semibold text-[#900b3d]">
+                PNR No.
+              </th>
+              <th className="px-2 py-2 text-left font-semibold text-[#900b3d]">
+                Status
+              </th>
+              <th className="px-2 py-2 text-left font-semibold text-[#900b3d]">
+                Date & Time
+              </th>
             </tr>
           </thead>
           <tbody>
             {complaints.map((complaint) => (
               <tr
                 key={complaint.complaintId || complaint._id}
-                className="hover:bg-gray-50 cursor-pointer h-12 sm:h-16 rounded "
+                className="bg-white/90 hover:bg-[#f58220]/10 cursor-pointer h-12 sm:h-14 rounded-xl shadow transition-all duration-150 border border-[#f58220]/30"
                 onClick={() => setSelectedComplaint(complaint)}
               >
-                <td className="px-2 sm:px-4 py-2 text-blue-600 font-semibold ">
+                <td className="px-2 py-2 text-blue-700 font-semibold rounded-l-xl ">
                   {complaint.complaintId || complaint._id}
                 </td>
-                <td className="px-2 sm:px-4 py-2">
-                  {complaint.type || complaint.category}
-                </td>
-                <td className="px-2 sm:px-4 py-2">{complaint.pnr}</td>
+                <td className="px-2 py-2">{complaint.pnr}</td>
                 {complaint.resolved === 0 ? (
-                  <td className="text-yellow-500">Pending</td>
+                  <td className="text-yellow-600 font-bold">Pending</td>
                 ) : (
-                  <td className="text-green-600">Completed</td>
+                  <td className="text-green-600 font-bold">Completed</td>
                 )}
-                <td className="px-2 sm:px-4 py-2">
-                  {complaint.createdAt ? complaint.createdAt.slice(0, 10) : ""}
+                <td className="px-2 py-2 rounded-r-xl">
+                  {formatDateTime(complaint.createdAt)}
                 </td>
               </tr>
             ))}
