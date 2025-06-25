@@ -66,7 +66,7 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
                   fontWeight: 600,
                   fontSize: "1rem",
                   borderRadius: "9999px",
-                  px: 3,
+                  px: 5,
                   py: 1,
                   textTransform: "none",
                   color: "#75002b",

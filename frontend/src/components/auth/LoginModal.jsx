@@ -56,7 +56,7 @@ const LoginPortal = ({ setToggleLogin }) => {
               fontWeight: 600,
               fontSize: "1rem",
               borderRadius: "9999px",
-              px: 2,
+              px: 6,
               py: 1,
               textTransform: "none",
               color: "#75002b",
