@@ -15,61 +15,126 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
   return (
     <>
       <div
-        className="fixed w-screen h-screen bg-black opacity-50 top-0 left-0 z-12"
+        className="fixed w-screen h-screen bg-black/60 top-0 left-0 z-12 backdrop-blur-sm"
         onClick={() => setSelectedComplaint(null)}
       ></div>
 
-      <div className="bg-white rounded-lg p-2 sm:p-6 w-[95vw] max-w-[98vw] sm:w-88 md:w-94 lg:w-110 xl:w-115 shadow-lg z-15 fixed max-h-[90vh] overflow-y-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden custom-scroll">
-        <button
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
-          onClick={() => setSelectedComplaint(null)}
-        >
-          ×
-        </button>
-        <h2 className="text-lg sm:text-xl font-bold mb-4">Complaint Details</h2>
-        <p className="mb-2">
-          <strong>ID:</strong> {complaint.complaintId}
-        </p>
-        <p className="mb-2">
-          <strong>Name</strong> {complaint.name}
-        </p>
-        <p className="mb-2">
-          <strong>Phone:</strong> {complaint.phone}
-        </p>
-        <p className="mb-2">
-          <strong>Train No:</strong> {complaint.trainCode}
-        </p>
-        <p className="mb-2">
-          <strong>Train name:</strong> {complaint.trainName}
-        </p>
-        <p className="mb-2 items-center">
-          <span className="font-bold">Media:</span>
-          <img
-            className="h-24 w-24 sm:h-36 sm:w-36 mx-auto "
-            src={complaint.media}
-          ></img>
-        </p>
-        <p className="mb-2">
-          <strong>Severity:</strong> {complaint.severity}
-        </p>
-        <p className="mb-2">
-          <strong>Category:</strong> {complaint.category}
-        </p>
-        <p className="mb-2">
-          <strong>SubCategory:</strong> {complaint.subCategory}
-        </p>
-        <p className="mb-4">
-          <strong>Description:</strong>{" "}
-          {complaint.description || "No Description"}
-        </p>
-        <p className="mb-4">
-          <strong>Date:</strong> {complaint.createdAt}
-        </p>
+      <div className="bg-gradient-to-br from-gray-50 to-gray-150 rounded-2xl w-[95vw] max-w-[98vw] sm:w-[600px] shadow-2xl z-15 fixed max-h-[90vh] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="relative w-full max-h-[90vh] overflow-y-auto custom-scroll">
+          <div className="px-4 sm:px-8 py-4 sm:py-8">
+            <button
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200/80 text-gray-600 hover:text-gray-800 transition-colors"
+              onClick={() => setSelectedComplaint(null)}
+            >
+              ×
+            </button>
 
-        {/* OTP Section */}
-        <p className="mb-2">
-          <strong>OTP To Complete:</strong> {complaint.otp}
-        </p>
+            <div className="border-b border-gray-200 pb-4 mb-6">
+              <h2 className="text-2xl font-bold text-[#900b3d]">
+                Complaint Details
+              </h2>
+              <p className="text-sm font-semibold text-black mt-1">
+                Reference ID: {complaint.complaintId}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Name</p>
+                  <p className="font-medium">{complaint.name || "N/A"}</p>
+                </div>
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Phone</p>
+                  <p className="font-medium">{complaint.phone || "N/A"}</p>
+                </div>
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Train Number</p>
+                  <p className="font-medium">{complaint.trainCode || "N/A"}</p>
+                </div>
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Train Name</p>
+                  <p className="font-medium">{complaint.trainName || "N/A"}</p>
+                </div>
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Category</p>
+                  <p className="font-medium">{complaint.category || "N/A"}</p>
+                </div>
+                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p className="text-sm text-gray-800">Sub-Category</p>
+                  <p className="font-medium">
+                    {complaint.subCategory || "N/A"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1 pt-2">
+                <p className="text-sm font-semibold text-gray-800">
+                  Description
+                </p>
+                <p className="font-medium bg-gray-50/80 p-4 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  {complaint.description || "No description provided"}
+                </p>
+              </div>
+
+              {complaint.media && complaint.media.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <p className="text-sm font-semibold text-gray-800">
+                    Attached Media ({complaint.media.length})
+                  </p>
+                  <div className="bg-gray-50/80 p-4 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {complaint.media.map((mediaUrl, index) => (
+                        <div key={index} className="relative group">
+                          <a
+                            href={mediaUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              className="h-auto max-h-[200px] w-full rounded-lg object-contain bg-white shadow-sm"
+                              src={mediaUrl}
+                              alt={`Complaint attachment ${index + 1}`}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all rounded-lg flex items-center justify-center">
+                              <span className="text-white opacity-0 group-hover:opacity-100 transition-all">
+                                Click to view
+                              </span>
+                            </div>
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-1 pt-2">
+                <p className="text-sm font-semibold text-gray-800">Status</p>
+                <div className="bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <p
+                    className={`font-medium ${
+                      complaint.resolved === 0
+                        ? "text-yellow-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {complaint.resolved === 0 ? "Pending" : "Completed"}
+                  </p>
+                </div>
+              </div>
+
+              {complaint.otp && (
+                <div className="space-y-1 pt-2 mt-6 border-t border-gray-200">
+                  <p className="text-sm text-gray-800 pt-4">Verification OTP</p>
+                  <div className="bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                    <p className="font-bold text-[#900b3d]">{complaint.otp}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
