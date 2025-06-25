@@ -5,6 +5,14 @@
   height: 0;
 }
 
+.input {
+  @apply w-full border border-gray-300 h-10 px-3 text-lg text-gray-700 bg-gray-100 rounded-md focus:outline-none;
+}
+
+.btn-primary {
+  @apply bg-[#75002b] text-white font-semibold text-lg h-10 rounded-md cursor-pointer hover:bg-[#9c1245] transition;
+}
+
 /* Responsive helpers */
 @media (max-width: 640px) {
   .main-form {

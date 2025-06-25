@@ -1,50 +1,97 @@
-import React, { useState } from 'react'
-import ReCAPTCHA from "react-google-recaptcha";
+import React from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import LoginModal from './LoginModal';
 import CreateAccount from './CreateAccount';
 
-const Auth = ({ setOpenLogin,toggleLogin,setToggleLogin }) => {
-    // const handleChangeTruncate = (e) => {
-    //     const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    //     return value;
-    // };
-    // const [formData, setFormData] = useState({
-    //     phone: "",
-    //     password: "",
-    // })
-    // const [verified, setVerified] = useState(false);
-    return (
-        <>
-            <div className="flex fixed flex-col min-h-[55vh] bg-white w-[90vw] max-w-[550px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
+  const handleTabChange = (event, newValue) => {
+    setToggleLogin(newValue === 1); // 0 = login, 1 = signup
+  };
 
-                {/* Cros Button */}
-                <div className="h-full w-full relative">
-                    <div className="h-[1.75rem] w-[1.75rem] rounded-full bg-orange-400 absolute right-[-0.875rem] top-[-0.875rem] cursor-pointer" onClick={(e) => setOpenLogin(false)}></div>
-                </div>
+  return (
+    <>
+      {/* Blurred Background */}
+      <div
+        className="fixed bg-black/70 backdrop-blur-sm h-screen w-screen z-40"
+        onClick={() => setOpenLogin(false)}
+      />
 
-                <div className="flex flex-col flex-1 w-full p-5 mt-2">
+      {/* Centered Auth Box */}
+      <Box
+        className="fixed z-50"
+        sx={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          position: 'fixed',
+          width: '90vw',
+          maxWidth: 550,
+        }}
+      >
+        <Paper
+          elevation={4}
+          sx={{
+            px: 3,
+            py: 4,
+            borderRadius: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {/* Fancy MUI Tabs as buttons */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+              mb: 3,
+              bgcolor: '#f0f0f0',
+              borderRadius: '9999px',
+              overflow: 'hidden',
+            }}
+          >
+            <Tabs
+              value={toggleLogin ? 1 : 0}
+              onChange={handleTabChange}
+              variant="fullWidth"
+              TabIndicatorProps={{ style: { display: 'none' } }}
+              sx={{
+                '& button': {
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  borderRadius: '9999px',
+                  px: 3,
+                  py: 1,
+                  textTransform: 'none',
+                  color: '#75002b',
+                  transition: '0.2s ease',
+                },
+                '& button.Mui-selected': {
+                  backgroundColor: '#75002b',
+                  color: 'white',
+                },
+              }}
+            >
+              <Tab label="Complaint Login" />
+              <Tab label="Create Account" />
+            </Tabs>
+          </Box>
 
-                    <div className="flex gap-2">
-                        <button type='button' className={`rounded-lg px-8 py-0.5 font-semibold text-lg cursor-pointer  ${toggleLogin?"border-2 border-[#e6e6e6]  text-[#900b3d]":"bg-[#900b3d]  text-white"}  `} onClick={(e)=>{setToggleLogin(false)}}>Complaint Login</button>
-                        <button type='button' className={`rounded-lg px-8 py-0.5 font-semibold text-lg cursor-pointer  ${!toggleLogin?"border-2 border-[#e6e6e6]  text-[#900b3d]":"bg-[#900b3d]  text-white"}`} onClick={(e)=>{setToggleLogin(true)}}>Create Account</button>
-                    </div>
+          {/* Conditional Rendering of Forms */}
+          <Box sx={{ width: '100%' }}>
+            {!toggleLogin && <LoginModal setToggleLogin={setToggleLogin} />}
+            {toggleLogin && (
+              <CreateAccount reset={() => setToggleLogin(false)} />
+            )}
+          </Box>
+        </Paper>
+      </Box>
+    </>
+  );
+};
 
-                    {!toggleLogin&&
-                        <LoginModal setToggleLogin={setToggleLogin}/>
-                    }
-                    {toggleLogin&&
-                        <CreateAccount reset={()=>{setToggleLogin(false)}}/>
-                    }
-                    
-
-                </div>
-
-
-
-            </div>
-            <div className="fixed bg-black opacity-[0.91] h-screen w-screen z-9" onClick={(e) => setOpenLogin(false)}></div>
-        </>
-    )
-}
-
-export default Auth
+export default Auth;
