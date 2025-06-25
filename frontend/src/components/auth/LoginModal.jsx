@@ -33,89 +33,109 @@ const LoginPortal = ({ setToggleLogin }) => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Paper
-        elevation={4}
+    <Box sx={{ width: "100%" }}>
+      {/* Tabs */}
+      <Box
         sx={{
-          width: "100%",
-          maxWidth: 500,
-          px: 3,
-          py: 4,
-          borderRadius: 3,
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+          mb: 3,
+          bgcolor: "#f0f0f0",
+          borderRadius: "9999px",
+          overflow: "hidden",
         }}
       >
-        {/* Tabs */}
-        <Box
+        <Tabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          variant="fullWidth"
+          slotProps={{ indicator: { style: { display: "none" } } }}
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            mb: 3,
-            bgcolor: "#f0f0f0",
-            borderRadius: "9999px",
-            overflow: "hidden",
+            "& button": {
+              fontWeight: 600,
+              fontSize: "1rem",
+              borderRadius: "9999px",
+              px: 2,
+              py: 1,
+              textTransform: "none",
+              color: "#75002b",
+            },
+            "& button.Mui-selected": {
+              backgroundColor: "#75002b",
+              color: "white",
+            },
           }}
         >
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            variant="fullWidth"
-            TabIndicatorProps={{ style: { display: "none" } }}
-            sx={{
-              "& button": {
-                fontWeight: 600,
-                fontSize: "1rem",
-                borderRadius: "9999px",
-                px: 2,
-                py: 1,
-                textTransform: "none",
-                color: "#75002b",
-              },
-              "& button.Mui-selected": {
-                backgroundColor: "#75002b",
-                color: "white",
-              },
-            }}
-          >
-            <Tab label="Password Login" />
-            <Tab label="OTP Login" />
-          </Tabs>
+          <Tab label="Password Login" />
+          <Tab label="OTP Login" />
+        </Tabs>
+      </Box>
+
+      {/* Content with fixed height */}
+      <Box
+        sx={{
+          width: "100%",
+          height: 380,
+          position: "relative",
+        }}
+      >
+        {/* Forgot Password */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            opacity: page === "forgotPassword" ? 1 : 0,
+            pointerEvents: page === "forgotPassword" ? "auto" : "none",
+            transition: "opacity 0.2s ease-in-out",
+          }}
+        >
+          <ForgotPassword
+            formData={formData}
+            setFormData={setFormData}
+            setPage={setPage}
+            reset={reset}
+          />
         </Box>
 
-        {/* Content */}
-        <Box sx={{ width: "100%" }}>
-          {page === "forgotPassword" ? (
-            <ForgotPassword
-              formData={formData}
-              setFormData={setFormData}
-              setPage={setPage}
-              reset={reset}
-            />
-          ) : tabIndex === 0 ? (
-            <LoginWithPassWord
-              formData={formData}
-              setFormData={setFormData}
-              setPage={setPage}
-              reset={reset}
-            />
-          ) : (
-            <LoginWithOtp
-              formData={formData}
-              setFormData={setFormData}
-              setPage={setPage}
-              reset={reset}
-            />
-          )}
+        {/* Password Login */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            opacity: page !== "forgotPassword" && tabIndex === 0 ? 1 : 0,
+            pointerEvents:
+              page !== "forgotPassword" && tabIndex === 0 ? "auto" : "none",
+            transition: "opacity 0.2s ease-in-out",
+          }}
+        >
+          <LoginWithPassWord
+            formData={formData}
+            setFormData={setFormData}
+            setPage={setPage}
+            reset={reset}
+          />
         </Box>
-      </Paper>
+
+        {/* OTP Login */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            opacity: page !== "forgotPassword" && tabIndex === 1 ? 1 : 0,
+            pointerEvents:
+              page !== "forgotPassword" && tabIndex === 1 ? "auto" : "none",
+            transition: "opacity 0.2s ease-in-out",
+          }}
+        >
+          <LoginWithOtp
+            formData={formData}
+            setFormData={setFormData}
+            setPage={setPage}
+            reset={reset}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 };

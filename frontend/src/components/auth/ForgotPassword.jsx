@@ -1,77 +1,95 @@
-import React from 'react'
+import React, { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { generateOtp,verifyOtp } from '../../actions/auth.actions';
-import { useDispatch } from 'react-redux';
+import { generateOtp } from "../../actions/auth.actions";
+import { useDispatch } from "react-redux";
 
-const ForgotPassword = ({formData,setFormData,setPage,reset}) => {
-    const dispatch = useDispatch();
-    const handleChangeTruncate = (e) => {
-        const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-        return value;
-    };
-    const handleGenerateOTP = () => {
-            if(!formData.phone|| formData.phone.length != 10) {
-                alert("Please enter a valid phone number.");
-                return;
-            }
-            else dispatch(generateOtp(formData.phone));
-            
-            console.log("Generating OTP for:", formData.phone);
-        };
-    return (
-        <form className='h-full'>
-            <div className="flex flex-col mt-8 h-full">
-                <input 
-                    type="tel" 
-                    inputMode="numeric" 
-                    pattern="[0-9]*" 
-                    value={formData.phone} 
-                    onChange={(e) => {
-                        const phone = handleChangeTruncate(e);
-                        setFormData(prev => ({ ...prev, phone }));
-                    }} 
-                    placeholder='Phone Number' 
-                    required
-                    className='w-full border-[1px] h-10 border-[#d9d9d9] px-2 text-lg flex items-center text-[#4e4e4e] bg-[#f4f5f6] placeholder-[#757575] rounded-md focus:outline-0' 
-                />
-                <button 
-                    type='button' 
-                    className='bg-[#75002b] w-full text-white rounded-md h-9 mt-4 font-medium text-xl cursor-pointer'
-                    onClick={handleGenerateOTP}
-                >
-                    Generate OTP
-                </button>
-                <input 
-                    type='text' 
-                    inputMode='numeric' 
-                    value={formData.otp} 
-                    onChange={(e) => { setFormData({ ...formData, otp: handleChangeTruncate(e) }) }} 
-                    placeholder='OTP' 
-                    className='w-full border-[1px] h-10 border-[#d9d9d9] px-2 text-lg flex items-center text-[#4e4e4e] bg-[#f4f5f6] placeholder-[#757575] rounded-md focus:outline-0 mt-4' 
-                />
-            </div>
+const ForgotPassword = ({ formData, setFormData, setPage, reset }) => {
+  const dispatch = useDispatch();
+  const [verified, setVerified] = useState(false);
 
-            <div className="mt-4">
-                <ReCAPTCHA
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                    onChange={(e) => { if (e) { setVerified(true) } }}
-                />
-            </div>
+  const handleChangeTruncate = (e) => e.target.value.replace(/\D/g, "");
 
-            <button 
-                type='submit' 
-                className='bg-[#75002b] w-full text-white rounded-md h-9 mb-5 mt-12 font-bold text-xl cursor-pointer'
-            >
-                Submit
-            </button>
-            <span 
-                className='text-[11px] mt-3 font-medium cursor-pointer hover:underline' 
-                onClick={(e) => reset()}
-            >
-                Go Back
-            </span>
-        </form>
-    )
-}
+  const handleGenerateOTP = () => {
+    if (!formData.phone || formData.phone.length !== 10) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
+    dispatch(generateOtp(formData.phone));
+  };
 
-export default ForgotPassword
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.phone || formData.phone.length !== 10) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
+    if (!formData.otp || formData.otp.length !== 6) {
+      alert("Please enter a valid OTP.");
+      return;
+    }
+    if (!verified) {
+      alert("Please verify the reCAPTCHA.");
+      return;
+    }
+    // Dispatch your password reset logic here
+    console.log("Reset password for:", formData.phone);
+  };
+
+  return (
+    <form className="h-full" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-y-4 mt-6">
+        <input
+          type="tel"
+          inputMode="numeric"
+          pattern="\d*"
+          value={formData.phone}
+          required
+          onChange={(e) => {
+            const phone = handleChangeTruncate(e);
+            setFormData((prev) => ({ ...prev, phone }));
+          }}
+          placeholder="Phone Number"
+          className="input"
+        />
+
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={handleGenerateOTP}
+        >
+          Generate OTP
+        </button>
+
+        <input
+          type="text"
+          inputMode="numeric"
+          value={formData.otp}
+          required
+          onChange={(e) =>
+            setFormData({ ...formData, otp: handleChangeTruncate(e) })
+          }
+          placeholder="OTP"
+          className="input"
+        />
+
+        <ReCAPTCHA
+          sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+          onChange={() => setVerified(true)}
+        />
+
+        <button type="submit" className="btn-primary mt-4">
+          Submit
+        </button>
+
+        <span
+          className="text-[11px] font-medium cursor-pointer hover:underline text-[#444] text-end"
+          onClick={reset}
+        >
+          Go Back
+        </span>
+      </div>
+    </form>
+  );
+};
+
+export default ForgotPassword;

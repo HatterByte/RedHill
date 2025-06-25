@@ -1,10 +1,10 @@
-import React from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import LoginModal from './LoginModal';
-import CreateAccount from './CreateAccount';
+import React from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import LoginModal from "./LoginModal";
+import CreateAccount from "./CreateAccount";
 
 const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
   const handleTabChange = (event, newValue) => {
@@ -23,56 +23,58 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
       <Box
         className="fixed z-50"
         sx={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          position: 'fixed',
-          width: '90vw',
-          maxWidth: 550,
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          position: "fixed",
+          width: "90vw",
+          maxWidth: 450,
+          height: 650,
         }}
       >
         <Paper
           elevation={4}
           sx={{
-            px: 3,
-            py: 4,
+            px: 4,
+            py: 3,
             borderRadius: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            height: "100%",
           }}
         >
           {/* Fancy MUI Tabs as buttons */}
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
               mb: 3,
-              bgcolor: '#f0f0f0',
-              borderRadius: '9999px',
-              overflow: 'hidden',
+              bgcolor: "#f0f0f0",
+              borderRadius: "9999px",
+              overflow: "hidden",
             }}
           >
             <Tabs
               value={toggleLogin ? 1 : 0}
               onChange={handleTabChange}
               variant="fullWidth"
-              TabIndicatorProps={{ style: { display: 'none' } }}
+              slotProps={{ indicator: { style: { display: "none" } } }}
               sx={{
-                '& button': {
+                "& button": {
                   fontWeight: 600,
-                  fontSize: '1rem',
-                  borderRadius: '9999px',
+                  fontSize: "1rem",
+                  borderRadius: "9999px",
                   px: 3,
                   py: 1,
-                  textTransform: 'none',
-                  color: '#75002b',
-                  transition: '0.2s ease',
+                  textTransform: "none",
+                  color: "#75002b",
+                  transition: "0.2s ease",
                 },
-                '& button.Mui-selected': {
-                  backgroundColor: '#75002b',
-                  color: 'white',
+                "& button.Mui-selected": {
+                  backgroundColor: "#75002b",
+                  color: "white",
                 },
               }}
             >
@@ -82,11 +84,40 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
           </Box>
 
           {/* Conditional Rendering of Forms */}
-          <Box sx={{ width: '100%' }}>
-            {!toggleLogin && <LoginModal setToggleLogin={setToggleLogin} />}
-            {toggleLogin && (
-              <CreateAccount reset={() => setToggleLogin(false)} />
-            )}
+          <Box
+            sx={{
+              width: "100%",
+              flex: 1,
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                overflowY: "auto",
+                px: 1,
+                "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "#d1d5db",
+                  borderRadius: "4px",
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                  background: "#9ca3af",
+                },
+              }}
+            >
+              {!toggleLogin && <LoginModal setToggleLogin={setToggleLogin} />}
+              {toggleLogin && (
+                <CreateAccount reset={() => setToggleLogin(false)} />
+              )}
+            </Box>
           </Box>
         </Paper>
       </Box>
