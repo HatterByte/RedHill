@@ -19,11 +19,11 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
         onClick={() => setSelectedComplaint(null)}
       ></div>
 
-      <div className="bg-gradient-to-br from-gray-50 to-gray-150 rounded-2xl w-[95vw] max-w-[98vw] sm:w-[600px] shadow-2xl z-15 fixed max-h-[90vh] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="bg-gradient-to-br from-gray-100/60 to-gray-300/20 rounded-2xl w-[95vw] max-w-[98vw] sm:w-[600px] shadow-2xl z-15 fixed max-h-[90vh] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="relative w-full max-h-[90vh] overflow-y-auto custom-scroll">
           <div className="px-4 sm:px-8 py-4 sm:py-8">
             <button
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200/80 text-gray-600 hover:text-gray-800 transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 hover:bg-gray-200/50 text-gray-600 hover:text-gray-800 transition-colors"
               onClick={() => setSelectedComplaint(null)}
             >
               ×
@@ -40,27 +40,27 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
 
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Name</p>
                   <p className="font-medium">{complaint.name || "N/A"}</p>
                 </div>
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Phone</p>
                   <p className="font-medium">{complaint.phone || "N/A"}</p>
                 </div>
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Train Number</p>
                   <p className="font-medium">{complaint.trainCode || "N/A"}</p>
                 </div>
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Train Name</p>
                   <p className="font-medium">{complaint.trainName || "N/A"}</p>
                 </div>
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Category</p>
                   <p className="font-medium">{complaint.category || "N/A"}</p>
                 </div>
-                <div className="space-y-1 bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Sub-Category</p>
                   <p className="font-medium">
                     {complaint.subCategory || "N/A"}
@@ -72,7 +72,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                 <p className="text-sm font-semibold text-gray-800">
                   Description
                 </p>
-                <p className="font-medium bg-gray-50/80 p-4 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <p className="font-medium bg-gray-100/70 p-4 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   {complaint.description || "No description provided"}
                 </p>
               </div>
@@ -82,7 +82,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                   <p className="text-sm font-semibold text-gray-800">
                     Attached Media ({complaint.media.length})
                   </p>
-                  <div className="bg-gray-50/80 p-4 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <div className="bg-gray-100/70 p-4 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {complaint.media.map((mediaUrl, index) => (
                         <div key={index} className="relative group">
@@ -111,7 +111,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
 
               <div className="space-y-1 pt-2">
                 <p className="text-sm font-semibold text-gray-800">Status</p>
-                <div className="bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                <div className="bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p
                     className={`font-medium ${
                       complaint.resolved === 0
@@ -127,7 +127,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
               {complaint.otp && (
                 <div className="space-y-1 pt-2 mt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-800 pt-4">Verification OTP</p>
-                  <div className="bg-gray-50/80 p-3 rounded-lg border border-gray-100 hover:bg-gray-200/80">
+                  <div className="bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                     <p className="font-bold text-[#900b3d]">{complaint.otp}</p>
                   </div>
                 </div>

@@ -138,10 +138,14 @@ const NavbarUserModal = ({ userModal, setUserModal }) => {
         </div>
       </div>
       {showProfileModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+          onClick={() => setShowProfileModal(false)}
+        >
           <form
             className="bg-white rounded-lg p-6 w-80 flex flex-col gap-4 shadow-lg"
             onSubmit={handleProfileSubmit}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="text-xl font-semibold mb-2">Update Profile</div>
             <label className="text-sm font-medium">Name</label>
