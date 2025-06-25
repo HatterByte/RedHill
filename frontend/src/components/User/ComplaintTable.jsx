@@ -30,7 +30,7 @@ const ComplaintTable = () => {
 
   if (authLoading || !user) {
     return (
-      <div className="m-10 bg-[rgba(255,255,255,0.9)] min-h-screen flex items-center justify-center text-lg">
+      <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.9)] min-h-[60vh] flex items-center justify-center text-base sm:text-lg">
         Loading user info...
       </div>
     );
@@ -38,7 +38,7 @@ const ComplaintTable = () => {
 
   if (loading) {
     return (
-      <div className="m-10 bg-[rgba(255,255,255,0.9)] min-h-screen flex items-center justify-center text-lg">
+      <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.9)] min-h-[60vh] flex items-center justify-center text-base sm:text-lg">
         Loading complaints...
       </div>
     );
@@ -46,51 +46,51 @@ const ComplaintTable = () => {
 
   if (error) {
     return (
-      <div className="m-10 bg-[rgba(255,255,255,0.9)] min-h-screen flex items-center justify-center text-lg text-red-600">
+      <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.9)] min-h-[60vh] flex items-center justify-center text-base sm:text-lg text-red-600">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="m-10 bg-[rgba(255,255,255,0.9)] min-h-screen">
+    <div className="m-2 sm:m-10 bg-[rgba(255,255,255,0.9)] min-h-[60vh] overflow-x-auto rounded-xl">
       {selectedComplaint && (
         <ComplaintModal
           complaint={selectedComplaint}
           setSelectedComplaint={setSelectedComplaint}
         />
       )}
-      <div className="overflow-x-auto min-h-screen rounded-xl">
-        <table className="min-w-full text-sm">
-          <thead className="table-header-group bg-[rgba(255,255,255,0.91)]  rounded">
-            <tr className="h-16">
-              <th className=" px-4 py-2 text-left">Ref No.</th>
-              <th className=" px-4 py-2 text-left">Issue Type</th>
-              <th className=" px-4 py-2 text-left">PNR No.</th>
-              <th className=" px-4 py-2 text-left">Status</th>
-              <th className=" px-4 py-2 text-left">Date</th>
+      <div className="overflow-x-auto min-h-[60vh] rounded-xl">
+        <table className="min-w-[600px] w-full text-xs sm:text-sm">
+          <thead className="table-header-group bg-[rgba(255,255,255,0.91)] rounded">
+            <tr className="h-12 sm:h-16">
+              <th className="px-2 sm:px-4 py-2 text-left">Ref No.</th>
+              <th className="px-2 sm:px-4 py-2 text-left">Issue Type</th>
+              <th className="px-2 sm:px-4 py-2 text-left">PNR No.</th>
+              <th className="px-2 sm:px-4 py-2 text-left">Status</th>
+              <th className="px-2 sm:px-4 py-2 text-left">Date</th>
             </tr>
           </thead>
           <tbody>
             {complaints.map((complaint) => (
               <tr
                 key={complaint.complaintId || complaint._id}
-                className="hover:bg-gray-50 cursor-pointer h-16 rounded "
+                className="hover:bg-gray-50 cursor-pointer h-12 sm:h-16 rounded "
                 onClick={() => setSelectedComplaint(complaint)}
               >
-                <td className=" px-4 py-2 text-blue-600 font-semibold ">
+                <td className="px-2 sm:px-4 py-2 text-blue-600 font-semibold ">
                   {complaint.complaintId || complaint._id}
                 </td>
-                <td className=" px-4 py-2">
+                <td className="px-2 sm:px-4 py-2">
                   {complaint.type || complaint.category}
                 </td>
-                <td className=" px-4 py-2">{complaint.pnr}</td>
+                <td className="px-2 sm:px-4 py-2">{complaint.pnr}</td>
                 {complaint.resolved === 0 ? (
                   <td className="text-yellow-500">Pending</td>
                 ) : (
                   <td className="text-green-600">Completed</td>
                 )}
-                <td className=" px-4 py-2">
+                <td className="px-2 sm:px-4 py-2">
                   {complaint.createdAt ? complaint.createdAt.slice(0, 10) : ""}
                 </td>
               </tr>

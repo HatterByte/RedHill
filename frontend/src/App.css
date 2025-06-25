@@ -1,5 +1,15 @@
 @import "tailwindcss";
-#file-upload-button{
-    cursor: pointer;
-    height: 0;
+
+#file-upload-button {
+  cursor: pointer;
+  height: 0;
+}
+
+/* Responsive helpers */
+@media (max-width: 640px) {
+  .main-form {
+    padding: 0.5rem !important;
+    border-left-width: 0 !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5) !important;
   }
+}

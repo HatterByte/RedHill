@@ -19,14 +19,14 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
         onClick={() => setSelectedComplaint(null)}
       ></div>
 
-      <div className="bg-white rounded-lg p-6 w-88 sm:w-94 md:w-110 lg:w-115 shadow-lg z-15 fixed max-h-[90vh] overflow-y-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden custom-scroll">
+      <div className="bg-white rounded-lg p-2 sm:p-6 w-[95vw] max-w-[98vw] sm:w-88 md:w-94 lg:w-110 xl:w-115 shadow-lg z-15 fixed max-h-[90vh] overflow-y-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden custom-scroll">
         <button
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
           onClick={() => setSelectedComplaint(null)}
         >
           ×
         </button>
-        <h2 className="text-xl font-bold mb-4">Complaint Details</h2>
+        <h2 className="text-lg sm:text-xl font-bold mb-4">Complaint Details</h2>
         <p className="mb-2">
           <strong>ID:</strong> {complaint.complaintId}
         </p>
@@ -44,7 +44,10 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
         </p>
         <p className="mb-2 items-center">
           <span className="font-bold">Media:</span>
-          <img className="h-36 w-36 mx-auto " src={complaint.media}></img>
+          <img
+            className="h-24 w-24 sm:h-36 sm:w-36 mx-auto "
+            src={complaint.media}
+          ></img>
         </p>
         <p className="mb-2">
           <strong>Severity:</strong> {complaint.severity}
@@ -56,7 +59,8 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
           <strong>SubCategory:</strong> {complaint.subCategory}
         </p>
         <p className="mb-4">
-          <strong>Description:</strong> {complaint.description || "No Description"}
+          <strong>Description:</strong>{" "}
+          {complaint.description || "No Description"}
         </p>
         <p className="mb-4">
           <strong>Date:</strong> {complaint.createdAt}
