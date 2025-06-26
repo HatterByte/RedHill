@@ -3,7 +3,7 @@ import { sendMessage } from "../utils/sendMessage.js";
 
 // Telegram Webhook Handler
 export const telegramWebhook = async (req, res) => {
-  console.log("Received Webhook:", req.body);
+  // console.log("Received Webhook:", req.body);
 
   const message = req.body.message;
   if (!message) return res.sendStatus(200); // Ignore empty requests
