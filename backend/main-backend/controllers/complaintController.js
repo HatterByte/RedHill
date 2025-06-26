@@ -84,23 +84,14 @@ export const registerComplaint = async (req, res) => {
       complaintAnalysis = await analyzeComplaint({ description, media });
     }
 
-    const lastComplaint = await Complaints.findOne().sort({ complaintId: -1 });
-
-    const complaintId =
-      lastComplaint && lastComplaint.complaintId
-        ? Number(lastComplaint.complaintId) + 1
-        : 1000; // Start from 1000 if no complaints exist
-
-    // console.log("Generated complaintId:", complaintId);
     let severity = determineSeverity(
       type || complaintAnalysis.type, subtype || complaintAnalysis.subtype
     );
 
-    const newComplaint = new Complaints({
-      complaintId, // Keep it for user-facing reference
+    const newComplaint = new Complaints({ // Keep it for user-facing reference
       user_Id: userId, // Use MongoDB _id reference
       phone: userPhone,
-      name: userName || "Anonymous",
+      name: userName || "User",
       gender: gender || "",
       age: age || null,
       pnr,
@@ -129,7 +120,6 @@ export const registerComplaint = async (req, res) => {
       success: true,
       message: "Complaint registered successfully",
       id: newComplaint._id,
-      complaintId,
       type: complaintAnalysis.type,
       subtype: complaintAnalysis.subtype,
       severity,

@@ -144,8 +144,7 @@ const Trains = (props) => {
         }
 
         alert(
-          "Complaint registered successfully! Your Complaint ID: " +
-            result.complaintId
+          "Complaint registered successfully! Your Complaint ID: " + result._id
         );
         setFormData({
           phone: "",

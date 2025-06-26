@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 const complaintSchema = new mongoose.Schema({
-    complaintId: { type: Number, unique: true, index: true },
     user_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Storing reference to User's _id
     phone: String,
     name: String,
