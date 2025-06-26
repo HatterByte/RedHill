@@ -34,7 +34,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                 Complaint Details
               </h2>
               <p className="text-sm font-semibold text-black mt-1">
-                Reference ID: {complaint.complaintId}
+                Reference ID: {complaint._id}
               </p>
             </div>
 
@@ -58,12 +58,12 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                 </div>
                 <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Category</p>
-                  <p className="font-medium">{complaint.category || "N/A"}</p>
+                  <p className="font-medium">{complaint.type || "N/A"}</p>
                 </div>
                 <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Sub-Category</p>
                   <p className="font-medium">
-                    {complaint.subCategory || "N/A"}
+                    {complaint.subtype || "N/A"}
                   </p>
                 </div>
               </div>

@@ -128,10 +128,11 @@ export const registerComplaint = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Complaint registered successfully",
+      id: newComplaint._id,
       complaintId,
       type: complaintAnalysis.type,
       subtype: complaintAnalysis.subtype,
-      severity: complaintAnalysis.severity,
+      severity,
     });
   } catch (error) {
     console.error("Error registering complaint:", error);

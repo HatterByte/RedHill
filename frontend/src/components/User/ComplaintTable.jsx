@@ -100,12 +100,12 @@ const ComplaintTable = () => {
             <tbody>
               {complaints.map((complaint) => (
                 <tr
-                  key={complaint.complaintId || complaint._id}
+                  key={complaint._id}
                   className="bg-white/90 hover:bg-[#f58220]/10 cursor-pointer h-12 sm:h-14 rounded-xl shadow transition-all duration-150 border border-[#f58220]/30"
                   onClick={() => setSelectedComplaint(complaint)}
                 >
-                  <td className="px-2 py-2 text-blue-700 font-semibold rounded-l-xl ">
-                    {complaint.complaintId || complaint._id}
+                  <td className="px-2 py-2 text-cyan-600 font-semibold rounded-l-xl ">
+                    {complaint._id}
                   </td>
                   <td className="px-2 py-2">{complaint.pnr}</td>
                   {complaint.resolved === 0 ? (

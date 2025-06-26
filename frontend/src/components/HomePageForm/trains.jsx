@@ -8,12 +8,13 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { axiosInstance } from "../../utils/axios";
 
 const Trains = (props) => {
-  // console.log("Trains")
   const dispatch = useDispatch();
   const [disabled, setDisabled] = useState(true);
   const [toggle, setToggle] = useState(false);
   const [otp, setOtp] = useState("");
   const [masterOtp, setMasterOtp] = useState("");
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [registeredComplaint, setRegisteredComplaint] = useState(null);
   const [formData, setFormData] = useState({
     phone: "",
     pnr: "",
@@ -61,7 +62,6 @@ const Trains = (props) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Use logged-in phone if authenticated
     let phoneToSend = formData.phone;
     if (
       props.auth.isAuthenticated &&
@@ -70,6 +70,7 @@ const Trains = (props) => {
     ) {
       phoneToSend = props.auth.user.phone;
     }
+
     // Validate required fields
     if (!formData.pnr) {
       alert("PNR is required");
@@ -87,8 +88,9 @@ const Trains = (props) => {
       alert("Please provide either description, media, or type and subtype");
       return;
     }
+
     try {
-      // 1. Upload media files to Cloudinary and get URLs
+      // Upload media files and get URLs
       let mediaLinks = [];
       if (formData.media.length > 0) {
         const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
@@ -97,10 +99,9 @@ const Trains = (props) => {
           const data = new FormData();
           data.append("file", file);
           data.append("upload_preset", uploadPreset);
-          // Set resource_type for video/audio
           let resourceType = "auto";
           if (file.type.startsWith("video/")) resourceType = "video";
-          if (file.type.startsWith("audio/")) resourceType = "video"; // Cloudinary uses 'video' for audio too
+          if (file.type.startsWith("audio/")) resourceType = "video";
           const uploadEndpoint =
             resourceType === "auto"
               ? uploadUrl
@@ -115,7 +116,8 @@ const Trains = (props) => {
           }
         }
       }
-      // 2. Send complaint registration request with media links
+
+      // Send complaint registration request
       const response = await axiosInstance.post("/complaints/register", {
         pnr: formData.pnr,
         phone: phoneToSend,
@@ -124,8 +126,23 @@ const Trains = (props) => {
         description: formData.description,
         media: mediaLinks,
       });
+
       const result = response.data;
       if (result.success) {
+        // If no type/subtype was provided but AI predicted them, show update modal
+        if (
+          (!formData.type || !formData.subtype) &&
+          result.type &&
+          result.subtype
+        ) {
+          setRegisteredComplaint({
+            id: result.id,
+            type: result.type,
+            subtype: result.subtype,
+          });
+          setShowUpdateModal(true);
+        }
+
         alert(
           "Complaint registered successfully! Your Complaint ID: " +
             result.complaintId
@@ -145,6 +162,32 @@ const Trains = (props) => {
       alert("Error submitting complaint: " + error.message);
     }
   };
+
+  const handleUpdateComplaint = async (newType, newSubtype) => {
+    if (!registeredComplaint) return;
+
+    try {
+      const response = await axiosInstance.put(
+        `/complaints/${registeredComplaint.id}`,
+        {
+          type: newType,
+          subtype: newSubtype,
+        }
+      );
+
+      if (response.data.success) {
+        alert("Complaint type updated successfully!");
+      } else {
+        alert(response.data.message || "Failed to update complaint type.");
+      }
+    } catch (error) {
+      alert("Error updating complaint: " + error.message);
+    } finally {
+      setShowUpdateModal(false);
+      setRegisteredComplaint(null);
+    }
+  };
+
   // if (props.auth.loading) {
   //     return (
   //         <>Loading...</>
@@ -465,7 +508,174 @@ const Trains = (props) => {
           </div>
         </div>
       </form>
+
+      {/* Update Complaint Type Modal */}
+      {showUpdateModal && registeredComplaint && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">
+              Update Complaint Type
+            </h3>
+            <div className="mb-4">
+              <label className="block text-sm text-[#7c7c7c] mb-2">
+                Suggested Type
+              </label>
+              <input
+                type="text"
+                value={registeredComplaint.type}
+                onChange={(e) =>
+                  setRegisteredComplaint({
+                    ...registeredComplaint,
+                    type: e.target.value,
+                  })
+                }
+                className="w-full border-[1px] h-12 border-[#d9d9d9] p-2 text-xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm text-[#7c7c7c] mb-2">
+                Suggested Sub-Type
+              </label>
+              <input
+                type="text"
+                value={registeredComplaint.subtype}
+                onChange={(e) =>
+                  setRegisteredComplaint({
+                    ...registeredComplaint,
+                    subtype: e.target.value,
+                  })
+                }
+                className="w-full border-[1px] h-12 border-[#d9d9d9] p-2 text-xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowUpdateModal(false)}
+                className="px-4 py-2 text-sm rounded-lg bg-[#f4f5f6] text-[#333] hover:bg-[#e1e1e1] transition-all duration-300 ease-in-out"
+              >
+                Skip
+              </button>
+              <button
+                onClick={() =>
+                  handleUpdateComplaint(
+                    registeredComplaint.type,
+                    registeredComplaint.subtype
+                  )
+                }
+                className="px-4 py-2 text-sm bg-[#75002b] text-white rounded-lg hover:bg-[#f58220] transition-all duration-500 ease-in-out"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update type modal component */}
+      <UpdateTypeModal
+        show={showUpdateModal}
+        initialType={registeredComplaint?.type}
+        initialSubtype={registeredComplaint?.subtype}
+        allTypes={data}
+        onConfirm={handleUpdateComplaint}
+        onCancel={() => {
+          setShowUpdateModal(false);
+          setRegisteredComplaint(null);
+        }}
+      />
     </>
+  );
+};
+
+const UpdateTypeModal = ({
+  show,
+  initialType,
+  initialSubtype,
+  allTypes,
+  onConfirm,
+  onCancel,
+}) => {
+  const [selectedType, setSelectedType] = useState(initialType || "");
+  const [selectedSubtype, setSelectedSubtype] = useState(initialSubtype || "");
+
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center">
+      <div className="bg-white/95 p-6 rounded-lg shadow-xl max-w-md w-full border border-gray-200">
+        <h3 className="text-xl font-semibold text-[#75002b] mb-4">
+          Review Complaint Type
+        </h3>
+        <div className="mb-4">
+          <p className="text-gray-700 mb-4">
+            Based on your description/media, we've categorized your complaint.
+            You can review and adjust if needed:
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-[#7c7c7c] text-lg font-medium block mb-2">
+                Type
+              </label>
+              <select
+                className="w-full border-[1px] h-13 border-[#d9d9d9] p-2 text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+                value={selectedType}
+                onChange={(e) => {
+                  setSelectedType(e.target.value);
+                  setSelectedSubtype("");
+                }}
+              >
+                <option value="" disabled>
+                  --select--
+                </option>
+                {Object.keys(allTypes).map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[#7c7c7c] text-lg font-medium block mb-2">
+                Sub-Type
+              </label>
+              <select
+                className="w-full border-[1px] h-13 border-[#d9d9d9] p-2 text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
+                value={selectedSubtype}
+                onChange={(e) => setSelectedSubtype(e.target.value)}
+              >
+                <option value="" disabled>
+                  --select--
+                </option>
+                {selectedType &&
+                  allTypes[selectedType]?.map((subtype, index) => (
+                    <option key={index} value={subtype}>
+                      {subtype}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
+            Skip
+          </button>
+          <button
+            onClick={() => onConfirm(selectedType, selectedSubtype)}
+            className="px-4 py-2 bg-[#75002b] text-white rounded hover:bg-[#f58220] transition-all duration-500 ease-in-out"
+            disabled={!selectedType || !selectedSubtype}
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
