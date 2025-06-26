@@ -1,7 +1,26 @@
 import React, { useState } from "react";
+import { axiosInstance } from "../../utils/axios";
 
 const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
   const [otp, setOtp] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleStatusUpdate = async () => {
+    try {
+      setIsUpdating(true);
+      await axiosInstance.put(`/complaints/${complaint._id}`, {
+        resolved: 1,
+      });
+
+      // Update the local state to show the new status
+      complaint.resolved = 1;
+      setIsUpdating(false);
+    } catch (error) {
+      console.error("Error updating complaint status:", error);
+      alert("Failed to update complaint status. Please try again.");
+      setIsUpdating(false);
+    }
+  };
 
   const handleOtpSubmit = () => {
     if (otp === "1234") {
@@ -62,9 +81,7 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                 </div>
                 <div className="space-y-1 bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                   <p className="text-sm text-gray-800">Sub-Category</p>
-                  <p className="font-medium">
-                    {complaint.subtype || "N/A"}
-                  </p>
+                  <p className="font-medium">{complaint.subtype || "N/A"}</p>
                 </div>
               </div>
 
@@ -112,15 +129,26 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
               <div className="space-y-1 pt-2">
                 <p className="text-sm font-semibold text-gray-800">Status</p>
                 <div className="bg-gray-100/70 p-3 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
-                  <p
-                    className={`font-medium ${
-                      complaint.resolved === 0
-                        ? "text-yellow-600"
-                        : "text-green-600"
-                    }`}
-                  >
-                    {complaint.resolved === 0 ? "Pending" : "Completed"}
-                  </p>
+                  <div className="flex justify-between items-center">
+                    <p
+                      className={`font-bold ${
+                        complaint.resolved === 0
+                          ? "text-yellow-600"
+                          : "text-green-700"
+                      }`}
+                    >
+                      {complaint.resolved === 0 ? "Pending" : "Completed"}
+                    </p>
+                    {complaint.resolved === 0 && (
+                      <button
+                        onClick={handleStatusUpdate}
+                        disabled={isUpdating}
+                        className="px-3 py-1 bg-green-800 text-gray-50 rounded-md text-sm hover:bg-green-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isUpdating ? "Updating..." : "Mark as Completed"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
