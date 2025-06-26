@@ -70,7 +70,7 @@ function Navbar(props) {
         <div className="leftThing flex items-center p-1">
           <div className="leftImg bg-">
             <img
-              src="https://railmadad.indianrailways.gov.in/madad/final/images/logog20.png"
+              src="../assets/HomePageImages/logog20.png"
               alt=""
               className=" h-14 xl:h-16 w-40"
             />
@@ -82,8 +82,8 @@ function Navbar(props) {
               navigate("/");
             }}
           >
-            <div className="RailMadad flex text-[#75002b] text-3xl xl:text-5xl font-bold">
-              RailMadad
+            <div className="RedHill flex text-[#75002b] text-3xl xl:text-5xl font-bold">
+              RedHill
             </div>
             <div className="text-black flex md:font-medium md-text-md text-sm ">
               For Inquiry, Assistance & Grievance Redressal
