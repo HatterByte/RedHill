@@ -75,7 +75,7 @@ export const verifyOTP = async (req, res) => {
       await redisClient.setEx(
         `otp:${phone}`,
         600,
-        JSON.stringify({ otp: "verified", verified: true })
+        JSON.stringify({ otp: hashedOTP, verified: true })
       );
       return res.status(200).json({ message: "OTP verified successfully" });
     }
@@ -215,9 +215,48 @@ export const loginWithPassword = async (req, res) => {
     return res
       .cookie("accessToken", token, options)
       .status(200)
-      .json({ message: "Login Successful", user:safeUser });
+      .json({ message: "Login Successful", user: safeUser });
   } catch (error) {
     console.error("Login Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Reset password using OTP verification
+ * @route   POST /auth/reset-password
+ * @access  Public
+ */
+export const resetPassword = async (req, res) => {
+  try {
+    const { phone, otp, newPassword } = req.body;
+    if (!phone || !otp || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Verify OTP
+    const data = await redisClient.get(`otp:${phone}`);
+    if (!data) return res.status(400).json({ message: "OTP expired" });
+
+    const { otp: hashedOTP, verified } = JSON.parse(data);
+    if(!verified) {
+      return res.status(400).json({ message: "OTP not verified" });
+    }
+    const isMatch = await bcryptjs.compare(otp, hashedOTP);
+    if (!isMatch) return res.status(400).json({ message: "Invalid OTP" });
+
+    // Find user and update password
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+    await redisClient.del(`otp:${phone}`);
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Password Reset Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

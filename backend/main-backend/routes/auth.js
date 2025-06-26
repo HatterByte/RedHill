@@ -8,6 +8,7 @@ import {
   verifyOTPLogin,
   loginWithPassword,
   logoutUser,
+  resetPassword
 } from "../controllers/authController.js";
 import auth from "../middleware/auth.js";
 dotenv.config();
@@ -18,5 +19,6 @@ router.post("/register", registerUser);
 router.post("/login-otp", verifyOTPLogin);
 router.post("/login-password", loginWithPassword);
 router.post("/logout", logoutUser);
+router.post("/reset-password",resetPassword);
 
 export default router;
