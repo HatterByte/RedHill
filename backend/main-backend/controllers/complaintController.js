@@ -3,6 +3,7 @@ import Complaints from "../models/Complaints.js";
 import mongoose from "mongoose";
 import { fetchPNRDetails } from "../services/pnrService.js";
 import { analyzeComplaint } from "../services/aiService.js";
+import { determineSeverity } from "../utils/severity.js";
 
 /**
  * Register a new complaint
@@ -91,6 +92,9 @@ export const registerComplaint = async (req, res) => {
         : 1000; // Start from 1000 if no complaints exist
 
     // console.log("Generated complaintId:", complaintId);
+    let severity = determineSeverity(
+      type || complaintAnalysis.type, subtype || complaintAnalysis.subtype
+    );
 
     const newComplaint = new Complaints({
       complaintId, // Keep it for user-facing reference
@@ -107,7 +111,7 @@ export const registerComplaint = async (req, res) => {
       description,
       type: complaintAnalysis.type,
       subtype: complaintAnalysis.subtype,
-      severity: complaintAnalysis.severity,
+      severity,
       employeeWorking: "",
       resolved: 0,
     });
@@ -311,6 +315,84 @@ export const getAllComplaints = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch complaints",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * Update complaint details
+ * @route PUT /complaints/:complaintId
+ * @access Private (Only complaint owner)
+ */
+export const updateComplaint = async (req, res) => {
+  try {
+    const { complaintId } = req.params;
+    const { type, subtype, resolved } = req.body;
+
+    // Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(complaintId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid complaint ID format",
+      });
+    }
+
+    // Find complaint
+    const complaint = await Complaints.findById(complaintId);
+    if (!complaint) {
+      return res.status(404).json({
+        success: false,
+        message: "Complaint not found",
+      });
+    }
+
+    // Check if the logged-in user is the complaint owner
+    if (complaint.user_Id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. You can only update your own complaints.",
+      });
+    }
+
+    // Create update object with only provided fields
+    const updateFields = {};
+    if (type) updateFields.type = type;
+    if (subtype) updateFields.subtype = subtype;
+    if (resolved !== undefined) updateFields.resolved = resolved;
+
+    // If type or subtype is updated, recalculate severity
+    if (type || subtype) {
+      const newType = type || complaint.type;
+      const newSubtype = subtype || complaint.subtype;
+      updateFields.severity = determineSeverity(newType, newSubtype);
+    }
+
+    // If no fields to update
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid fields provided for update",
+      });
+    }
+
+    // Update complaint
+    const updatedComplaint = await Complaints.findByIdAndUpdate(
+      complaintId,
+      { $set: updateFields },
+      { new: true } // Return updated document
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Complaint updated successfully",
+      complaint: updatedComplaint,
+    });
+  } catch (error) {
+    console.error("Error updating complaint:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update complaint",
       error: error.message,
     });
   }
