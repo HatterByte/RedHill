@@ -83,7 +83,7 @@ export const telegramWebhook = async (req, res) => {
   res.sendStatus(200);
 };
 
-// ✅ Send OTP API
+//  Send OTP API
 export const sendOTP = async (req, res) => {
   try {
     const { phone, otp } = req.body;

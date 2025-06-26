@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import axios from "axios";
 import redisClient from "../config/redis.js";
+import { sendMessage } from "../utils/sendMessage.js";
 
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -47,9 +48,10 @@ export const requestOTP = async (req, res) => {
       JSON.stringify({ otp: hashedOTP, verified: false })
     ); // Store OTP in Redis (expires in 5 min)
 
-    await axios.post("http://localhost:8000/otp/send-otp", { phone, otp });
+    await sendMessage(user.chatId, `🔢 Your OTP is : ${otp}`);
+    // await axios.post("http://localhost:8000/otp/send-otp", { phone, otp });
 
-    res.status(200).json({ message: "OTP sent successfully" });
+    res.status(200).json({ message: "OTP sent successfully via telegram" });
   } catch (error) {
     console.error("OTP Request Error:", error);
     res.status(500).json({ message: "Internal server error" });
