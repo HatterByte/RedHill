@@ -76,6 +76,10 @@ const Trains = (props) => {
       alert("PNR is required");
       return;
     }
+    if (formData.pnr.length !== 10) {
+      alert("PNR must be exactly 10 digits");
+      return;
+    }
     if (!phoneToSend) {
       alert("Phone number is required");
       return;
@@ -144,7 +148,7 @@ const Trains = (props) => {
         }
 
         alert(
-          "Complaint registered successfully! Your Complaint ID: " + result._id
+          "Complaint registered successfully! Your Complaint ID: " + result.id
         );
         setFormData({
           phone: "",
