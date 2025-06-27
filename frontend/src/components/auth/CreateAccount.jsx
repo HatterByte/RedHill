@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { generateOtp, signUp } from "../../actions/auth.actions";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const CreateAccount = ({ reset }) => {
   const dispatch = useDispatch();
+  const { showAlert } = useGlobalAlert();
 
   const [verified, setVerified] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,7 +21,7 @@ const CreateAccount = ({ reset }) => {
 
   const handleGenerateOTP = () => {
     if (!formData.phone || formData.phone.length !== 10) {
-      alert("Please enter a valid phone number.");
+      showAlert("Please enter a valid phone number.", "warning");
       return;
     }
     dispatch(generateOtp(formData.phone));
@@ -28,22 +30,24 @@ const CreateAccount = ({ reset }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.phone.length !== 10) {
-      alert("Please enter a valid phone number.");
+      showAlert("Please enter a valid phone number.", "warning");
       return;
     }
     if (formData.password !== confirmPassword) {
-      alert("Passwords do not match.");
+      showAlert("Passwords do not match.", "warning");
       return;
     }
     if (formData.otp.length !== 6) {
-      alert("Please enter a valid OTP.");
+      showAlert("Please enter a valid OTP.", "warning");
       return;
     }
     if (!verified) {
-      alert("Please verify the reCAPTCHA.");
+      showAlert("Please verify the reCAPTCHA.", "warning");
       return;
     }
-    dispatch(signUp(formData.name, formData.phone, formData.password, formData.otp));
+    dispatch(
+      signUp(formData.name, formData.phone, formData.password, formData.otp)
+    );
   };
 
   return (
@@ -81,16 +85,14 @@ const CreateAccount = ({ reset }) => {
         pattern="\d*"
         required
         value={formData.phone}
-        onChange={(e) => setFormData({ ...formData, phone: handleChangeTruncate(e) })}
+        onChange={(e) =>
+          setFormData({ ...formData, phone: handleChangeTruncate(e) })
+        }
         placeholder="Phone Number"
         className="input"
       />
 
-      <button
-        type="button"
-        onClick={handleGenerateOTP}
-        className="btn-primary"
-      >
+      <button type="button" onClick={handleGenerateOTP} className="btn-primary">
         Generate OTP
       </button>
 
@@ -99,7 +101,9 @@ const CreateAccount = ({ reset }) => {
         inputMode="numeric"
         required
         value={formData.otp}
-        onChange={(e) => setFormData({ ...formData, otp: handleChangeTruncate(e) })}
+        onChange={(e) =>
+          setFormData({ ...formData, otp: handleChangeTruncate(e) })
+        }
         placeholder="OTP"
         className="input"
       />
@@ -111,10 +115,7 @@ const CreateAccount = ({ reset }) => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="btn-primary mt-6"
-      >
+      <button type="submit" className="btn-primary mt-6">
         Submit
       </button>
     </form>

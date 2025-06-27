@@ -2,18 +2,22 @@ import React, { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { loginWithPassword } from "../../actions/auth.actions";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const LoginWithPassword = ({ formData, setFormData, setPage, reset }) => {
   const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
+  const { showAlert } = useGlobalAlert();
 
   const handleChangeTruncate = (e) => e.target.value.replace(/\D/g, "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.phone.length !== 10) return alert("Invalid phone number.");
-    if (formData.password.length < 6) return alert("Invalid password.");
-    if (!verified) return alert("Please complete reCAPTCHA.");
+    if (formData.phone.length !== 10)
+      return showAlert("Invalid phone number.", "warning");
+    if (formData.password.length < 6)
+      return showAlert("Invalid password.", "warning");
+    if (!verified) return showAlert("Please complete reCAPTCHA.", "warning");
     dispatch(loginWithPassword(formData.phone, formData.password));
   };
 

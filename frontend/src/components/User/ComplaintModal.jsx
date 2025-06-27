@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../../utils/axios";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
   const [otp, setOtp] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const { showAlert } = useGlobalAlert();
 
   const handleStatusUpdate = async () => {
     try {
@@ -17,17 +19,20 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
       setIsUpdating(false);
     } catch (error) {
       console.error("Error updating complaint status:", error);
-      alert("Failed to update complaint status. Please try again.");
+      showAlert(
+        "Failed to update complaint status. Please try again.",
+        "error"
+      );
       setIsUpdating(false);
     }
   };
 
   const handleOtpSubmit = () => {
     if (otp === "1234") {
-      alert("Complaint successfully completed!");
+      showAlert("Complaint successfully completed!", "success");
       onClose();
     } else {
-      alert("Invalid OTP. Please try again.");
+      showAlert("Invalid OTP. Please try again.", "warning");
     }
   };
 

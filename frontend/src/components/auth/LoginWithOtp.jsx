@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch } from "react-redux";
 import { generateOtp, verifyOtp } from "../../actions/auth.actions";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const LoginWithOtp = ({ reset, formData, setFormData }) => {
   const [verified, setVerified] = useState(false);
   const dispatch = useDispatch();
+  const { showAlert } = useGlobalAlert();
 
   const handleChangeTruncate = (e) => e.target.value.replace(/\D/g, "");
 
   const handleGenerateOTP = () => {
     if (formData.phone.length !== 10) {
-      alert("Please enter a valid phone number.");
+      showAlert("Please enter a valid phone number.", "warning");
       return;
     }
     dispatch(generateOtp(formData.phone));
@@ -19,9 +21,10 @@ const LoginWithOtp = ({ reset, formData, setFormData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.phone.length !== 10) return alert("Invalid phone number.");
-    if (formData.otp.length !== 6) return alert("Invalid OTP.");
-    if (!verified) return alert("Please complete reCAPTCHA.");
+    if (formData.phone.length !== 10)
+      return showAlert("Invalid phone number.", "warning");
+    if (formData.otp.length !== 6) return showAlert("Invalid OTP.", "warning");
+    if (!verified) return showAlert("Please complete reCAPTCHA.", "warning");
     dispatch(verifyOtp(formData.phone, formData.otp));
   };
 

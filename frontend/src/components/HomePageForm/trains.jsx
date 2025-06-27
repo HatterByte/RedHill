@@ -6,9 +6,11 @@ import { generateOtp, verifyOtp } from "../../actions/auth.actions";
 import { getUser } from "../../actions/auth.actions";
 import ReCAPTCHA from "react-google-recaptcha";
 import { axiosInstance } from "../../utils/axios";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const Trains = (props) => {
   const dispatch = useDispatch();
+  const { showAlert } = useGlobalAlert();
   const [disabled, setDisabled] = useState(true);
   const [toggle, setToggle] = useState(false);
   const [otp, setOtp] = useState("");
@@ -29,14 +31,14 @@ const Trains = (props) => {
   };
   function handleGenerateOTP() {
     if (formData.phone.length !== 10) {
-      alert("enter a valid Phone");
+      showAlert("Enter a valid Phone", "warning");
       return;
     }
     dispatch(generateOtp(formData.phone));
   }
   const check = async () => {
     if (otp.length !== 6) {
-      alert("enter a valid OTP");
+      showAlert("Enter a valid OTP", "warning");
       return;
     }
     await dispatch(verifyOtp(formData.phone, otp));
@@ -73,15 +75,15 @@ const Trains = (props) => {
 
     // Validate required fields
     if (!formData.pnr) {
-      alert("PNR is required");
+      showAlert("PNR is required", "warning");
       return;
     }
     if (formData.pnr.length !== 10) {
-      alert("PNR must be exactly 10 digits");
+      showAlert("PNR must be exactly 10 digits", "warning");
       return;
     }
     if (!phoneToSend) {
-      alert("Phone number is required");
+      showAlert("Phone number is required", "warning");
       return;
     }
     if (
@@ -89,7 +91,10 @@ const Trains = (props) => {
       formData.media.length === 0 &&
       (!formData.type || !formData.subtype)
     ) {
-      alert("Please provide either description, media, or type and subtype");
+      showAlert(
+        "Please provide either description, media, or type and subtype",
+        "warning"
+      );
       return;
     }
 
@@ -147,8 +152,9 @@ const Trains = (props) => {
           setShowUpdateModal(true);
         }
 
-        alert(
-          "Complaint registered successfully! Your Complaint ID: " + result.id
+        showAlert(
+          "Complaint registered successfully! Your Complaint ID: " + result.id,
+          "success"
         );
         setFormData({
           phone: "",
@@ -159,10 +165,10 @@ const Trains = (props) => {
           description: "",
         });
       } else {
-        alert(result.message || "Failed to register complaint.");
+        showAlert(result.message || "Failed to register complaint.", "error");
       }
     } catch (error) {
-      alert("Error submitting complaint: " + error.message);
+      showAlert("Error submitting complaint: " + error.message, "error");
     }
   };
 
@@ -179,12 +185,15 @@ const Trains = (props) => {
       );
 
       if (response.data.success) {
-        alert("Complaint type updated successfully!");
+        showAlert("Complaint type updated successfully!", "success");
       } else {
-        alert(response.data.message || "Failed to update complaint type.");
+        showAlert(
+          response.data.message || "Failed to update complaint type.",
+          "error"
+        );
       }
     } catch (error) {
-      alert("Error updating complaint: " + error.message);
+      showAlert("Error updating complaint: " + error.message, "error");
     } finally {
       setShowUpdateModal(false);
       setRegisteredComplaint(null);

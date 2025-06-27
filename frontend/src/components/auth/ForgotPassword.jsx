@@ -3,17 +3,19 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { generateOtp } from "../../actions/auth.actions";
 import { useDispatch } from "react-redux";
 import { axiosInstance } from "../../utils/axios";
+import { useGlobalAlert } from "../../utils/AlertContext";
 
 const ForgotPassword = ({ formData, setFormData, setPage, reset }) => {
   const dispatch = useDispatch();
   const [verified, setVerified] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const { showAlert } = useGlobalAlert();
 
   const handleChangeTruncate = (e) => e.target.value.replace(/\D/g, "");
 
   const handleGenerateOTP = () => {
     if (!formData.phone || formData.phone.length !== 10) {
-      alert("Please enter a valid phone number.");
+      showAlert("Please enter a valid phone number.", "warning");
       return;
     }
     dispatch(generateOtp(formData.phone));
@@ -22,15 +24,15 @@ const ForgotPassword = ({ formData, setFormData, setPage, reset }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.phone || formData.phone.length !== 10) {
-      alert("Please enter a valid phone number.");
+      showAlert("Please enter a valid phone number.", "warning");
       return;
     }
     if (!formData.otp || formData.otp.length !== 6) {
-      alert("Please enter a valid OTP.");
+      showAlert("Please enter a valid OTP.", "warning");
       return;
     }
     if (!verified) {
-      alert("Please verify the reCAPTCHA.");
+      showAlert("Please verify the reCAPTCHA.", "warning");
       return;
     }
 
@@ -44,14 +46,17 @@ const ForgotPassword = ({ formData, setFormData, setPage, reset }) => {
         setShowNewPassword(true);
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Error verifying OTP");
+      showAlert(
+        error.response?.data?.message || "Error verifying OTP",
+        "error"
+      );
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (!formData.newPassword || formData.newPassword.length < 6) {
-      alert("Password must be at least 6 characters long");
+      showAlert("Password must be at least 6 characters long", "warning");
       return;
     }
 
@@ -62,10 +67,13 @@ const ForgotPassword = ({ formData, setFormData, setPage, reset }) => {
         newPassword: formData.newPassword,
       });
 
-      alert(response.data.message);
+      showAlert(response.data.message, "success");
       reset();
     } catch (error) {
-      alert(error.response?.data?.message || "Error resetting password");
+      showAlert(
+        error.response?.data?.message || "Error resetting password",
+        "error"
+      );
     }
   };
 
