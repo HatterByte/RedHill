@@ -22,7 +22,7 @@ const VerticalNavbar = ({ activeTab, setActiveTab }) => {
             width={40}
             className="md:h-[55px] md:w-[55px]"
           />
-          <span className="text-white text-xs md:text-lg">{"TRAIN"}</span>
+          <span className="text-white text-xs md:text-lg">{"Train"}</span>
           {activeTab === "train" && (
             <>
               <div className="hidden md:block absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>
@@ -47,7 +47,9 @@ const VerticalNavbar = ({ activeTab, setActiveTab }) => {
             width={40}
             className="md:h-[55px] md:w-[55px]"
           />
-          <span className="text-white text-xs md:text-lg">{"Anubhav"}</span>
+          <div className="text-center">
+          <span className="text-white text-xs md:text-lg">{"Appreciation/\nRail Anubhav"}</span>
+          </div>
           {activeTab === "Anubhav" && (
             <>
               <div className="hidden md:block absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>
@@ -72,7 +74,9 @@ const VerticalNavbar = ({ activeTab, setActiveTab }) => {
             width={40}
             className="md:h-[55px] md:w-[55px]"
           />
-          <span className="text-white text-xs md:text-lg">{"Track"}</span>
+          <div className="text-center">
+          <span className="text-white text-xs md:text-lg ">{"Track Your Concern"}</span>
+          </div>
           {activeTab === "Track" && (
             <>
               <div className="hidden md:block absolute w-[5px] h-full left-[100%] top-0 bg-[#75002b]"></div>

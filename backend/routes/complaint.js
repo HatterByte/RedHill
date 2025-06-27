@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/register", auth, registerComplaint);
 
 // Get complaint by ID
-router.get("/complaint/:complaintId", auth, getComplaintById);
+router.get("/complaint/:complaintId", getComplaintById);
 
 // Update complaint
 router.put("/:complaintId", auth, updateComplaint);

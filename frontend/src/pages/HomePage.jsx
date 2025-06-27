@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import Auth from "../components/auth/Auth";
 import HomePageIconGrid from "../components/HomePageIconGrid";
 import SuggestionsForm from "../components/HomePageForm/SuggestionsForm";
+import TrackConcernForm from "../components/HomePageForm/TrackConcernForm";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("train");
@@ -24,6 +25,7 @@ const HomePage = () => {
             {activeTab === "train" && <Trains />}
             {activeTab === "Anubhav" && <AnubhavForm />}
             {activeTab === "Suggestion" && <SuggestionsForm />}
+            {activeTab === "Track" && <TrackConcernForm />}
           </div>
         </div>
       </div>

@@ -137,7 +137,7 @@ export const registerComplaint = async (req, res) => {
 /**
  * Get complaint details by MongoDB `_id`
  * @route GET /complaints/complaint/:complaintId
- * @access Private (Only complaint owner or admin)
+ * @access Public
  */
 export const getComplaintById = async (req, res) => {
   try {
@@ -157,25 +157,6 @@ export const getComplaintById = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Complaint not found",
-      });
-    }
-
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Check if the logged-in user is the complaint owner or an admin
-    if (
-      req.user._id.toString() !== complaint.user_Id.toString() &&
-      !req.user.isAdmin
-    ) {
-      return res.status(403).json({
-        success: false,
-        message:
-          "Access denied. You are not authorized to view this complaint.",
       });
     }
 
