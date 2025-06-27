@@ -3,12 +3,12 @@ import Auth from "./auth/Auth";
 import { connect } from "react-redux";
 import NavbarUserModal from "./User/NavbarUserModal";
 import { useNavigate } from "react-router-dom";
+import { useLoginModal } from "../utils/LoginModalContext";
 function Navbar(props) {
-  const [openLogin, setOpenLogin] = useState(false);
-  const [toggleLogin, setToggleLogin] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const navigate = useNavigate();
   const modalRef = useRef();
+  const { openLoginModal, open, defaultTab, setOpen } = useLoginModal();
 
   useEffect(() => {
     // Prevent duplicate script loading
@@ -40,30 +40,29 @@ function Navbar(props) {
   }, []);
   useEffect(() => {
     if (props.user) {
-      setOpenLogin(false);
-      setToggleLogin(false);
+      setOpen(false);
     }
   }, [props.user]);
   useEffect(() => {
     console.log(userModal);
   }, [userModal]);
   useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setUserModal(false);
-    }
-  };
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setUserModal(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <>
-      {openLogin && (
+      {open && (
         <Auth
-          setOpenLogin={setOpenLogin}
-          toggleLogin={toggleLogin}
-          setToggleLogin={setToggleLogin}
+          setOpenLogin={setOpen}
+          toggleLogin={defaultTab === 1}
+          setToggleLogin={() => {}}
         />
       )}
       <div className="w-full flex justify-around items-center px-1 lg:py-4 bg-white flex-wrap md:flex-wrap lg:flex-nowrap">
@@ -159,7 +158,10 @@ function Navbar(props) {
 
               {userModal && (
                 <div className="absolute top-full right-0 z-50 mt-2">
-                  <NavbarUserModal userModal={userModal} setUserModal={setUserModal} />
+                  <NavbarUserModal
+                    userModal={userModal}
+                    setUserModal={setUserModal}
+                  />
                 </div>
               )}
             </div>
@@ -170,8 +172,8 @@ function Navbar(props) {
                 className="bg-[#dcdef9] w-22 h-8 rounded-sm text-sm md:text-md md:h-10 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
-                  setToggleLogin(false);
-                  setOpenLogin(true);
+                  setOpen(false);
+                  openLoginModal();
                 }}
               >
                 Login
@@ -181,8 +183,8 @@ function Navbar(props) {
                 className="bg-[#efe4e8] w-22 h-8 flex justify-center items-center rounded-sm text-sm md:text-md md:h-10 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
-                  setToggleLogin(true);
-                  setOpenLogin(true);
+                  setOpen(false);
+                  openLoginModal();
                 }}
               >
                 Sign Up

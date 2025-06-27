@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useGlobalAlert } from "../../utils/AlertContext";
+import { useSelector } from "react-redux";
+import { useLoginModal } from "../../utils/LoginModalContext";
 
 const positiveAspects = [
   "Neat & Clean Coaches",
@@ -11,12 +13,14 @@ const positiveAspects = [
   "Others",
 ];
 
-const StarRating = ({ rating, setRating }) => (
+const StarRating = ({ rating, setRating, onFocus }) => (
   <div className="flex flex-row gap-2 mt-2 mb-4">
     {[1, 2, 3, 4, 5].map((star) => (
       <svg
         key={star}
         onClick={() => setRating(star)}
+        onFocus={onFocus}
+        tabIndex={0}
         className={`w-12 h-12 cursor-pointer transition-colors ${
           rating >= star ? "text-yellow-400" : "text-gray-300"
         }`}
@@ -36,8 +40,36 @@ const AnubhavForm = () => {
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState(0);
   const { showAlert } = useGlobalAlert();
+  const auth = useSelector((state) => state.auth);
+  const { openLoginModal } = useLoginModal();
+  const formRef = useRef();
+
+  // Block interaction if not logged in
+  const requireLogin = (e) => {
+    if (!auth.isAuthenticated) {
+      if (e) e.preventDefault && e.preventDefault();
+      openLoginModal(1); // Open OTP tab by default
+      return true;
+    }
+    return false;
+  };
+
+  // Use onMouseDown to block dropdown/input opening
+  const guardedProps = {
+    onMouseDown: (e) => {
+      if (requireLogin(e)) return;
+    },
+    onFocus: (e) => {
+      if (requireLogin(e)) return;
+    },
+    tabIndex: 0,
+    style: !auth.isAuthenticated
+      ? { cursor: "pointer", background: "#f4f5f6" }
+      : {},
+  };
 
   const handleSubmit = (e) => {
+    if (requireLogin(e)) return;
     e.preventDefault();
     showAlert("Thank you for your feedback!", "success");
   };
@@ -45,6 +77,7 @@ const AnubhavForm = () => {
   return (
     <>
       <form
+        ref={formRef}
         onSubmit={handleSubmit}
         className="mt-6 relative w-full max-w-2xl mx-auto px-2 sm:px-4"
       >
@@ -66,6 +99,7 @@ const AnubhavForm = () => {
               <span className="text-[#f05f40]">*</span>
             </div>
             <select
+              {...guardedProps}
               className="w-full border-[1px] h-11 sm:h-13 border-[#d9d9d9] p-2 text-base sm:text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1"
               value={mode}
               onChange={(e) => setMode(e.target.value)}
@@ -83,6 +117,7 @@ const AnubhavForm = () => {
               <span className="text-[#f05f40]">*</span>
             </div>
             <input
+              {...guardedProps}
               className="w-full border-[1px] h-11 sm:h-13 border-[#d9d9d9] p-2 text-base sm:text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1"
               type="text"
               placeholder={
@@ -102,6 +137,7 @@ const AnubhavForm = () => {
             <span className="text-[#f05f40]">*</span>
           </div>
           <select
+            {...guardedProps}
             className="w-full border-[1px] h-11 sm:h-13 border-[#d9d9d9] p-2 text-base sm:text-xl bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1"
             value={aspect}
             onChange={(e) => setAspect(e.target.value)}
@@ -123,6 +159,7 @@ const AnubhavForm = () => {
             <span className="text-[#f05f40]">*</span>
           </div>
           <textarea
+            {...guardedProps}
             className="w-full border-[1px] h-32 sm:h-40 border-[#d9d9d9] p-2 flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb] mt-1 text-base sm:text-xl"
             placeholder="Describe your experience..."
             value={description}
@@ -136,7 +173,11 @@ const AnubhavForm = () => {
               Feedback
             </label>
           </div>
-          <StarRating rating={rating} setRating={setRating} />
+          <StarRating
+            rating={rating}
+            setRating={setRating}
+            onFocus={requireLogin}
+          />
         </div>
         <div className="flex w-full flex-col sm:flex-row justify-end items-center gap-4 mt-10">
           <button
