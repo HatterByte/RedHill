@@ -72,7 +72,7 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
                   py: 1,
                   textTransform: "none",
                   color: "#75002b",
-                  transition: "0.2s ease",
+                  transition: "0.3s ease",
                 },
                 "& button.Mui-selected": {
                   backgroundColor: "#75002b",

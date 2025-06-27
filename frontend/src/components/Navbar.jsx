@@ -66,7 +66,11 @@ function Navbar(props) {
         />
       )}
       <div className="w-full flex justify-around items-center px-1 lg:py-4 bg-white flex-wrap md:flex-wrap lg:flex-nowrap">
-        <div className="leftThing flex items-center p-1">
+        <div className="leftThing flex items-center p-1 cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}>
           <div className="leftImg bg-">
             <img
               src="../assets/HomePageImages/logog20.png"
@@ -75,11 +79,7 @@ function Navbar(props) {
             />
           </div>
           <div
-            className="Headingg flex flex-col ml-3 max-w-[200px] lg:max-w-[350px] cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/");
-            }}
+            className="Headingg flex flex-col ml-3 max-w-[200px] lg:max-w-[350px] "
           >
             <div className="RedHill flex text-[#75002b] text-3xl xl:text-5xl font-bold">
               RedHill
