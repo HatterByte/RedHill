@@ -6,6 +6,8 @@ import AnubhavForm from "../components/HomePageForm/AnubhavForm";
 import Footer from "../components/Footer";
 import Auth from "../components/auth/Auth";
 import HomePageIconGrid from "../components/HomePageIconGrid";
+import SuggestionsForm from "../components/HomePageForm/SuggestionsForm";
+
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("train");
   return (
@@ -21,6 +23,7 @@ const HomePage = () => {
           <div className="main-form flex flex-col flex-grow w-full min-h-150 bg-white/90 backdrop-blur-sm px-3 py-4 sm:p-6 border-l-0 md:border-l-[6px] border-[#f58220] shadow-[0_0_30px_rgba(0,0,0,0.7)] md:shadow-[0_0_50px_rgba(0,0,0,0.9)]">
             {activeTab === "train" && <Trains />}
             {activeTab === "Anubhav" && <AnubhavForm />}
+            {activeTab === "Suggestion" && <SuggestionsForm />}
           </div>
         </div>
       </div>

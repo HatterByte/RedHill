@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -7,7 +7,9 @@ import LoginModal from "./LoginModal";
 import CreateAccount from "./CreateAccount";
 
 const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
+  const [tab, setTab] = useState(toggleLogin ? 1 : 0);
   const handleTabChange = (event, newValue) => {
+    setTab(newValue);
     setToggleLogin(newValue === 1); // 0 = login, 1 = signup
   };
 
@@ -57,7 +59,7 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
             }}
           >
             <Tabs
-              value={toggleLogin ? 1 : 0}
+              value={tab}
               onChange={handleTabChange}
               variant="fullWidth"
               slotProps={{ indicator: { style: { display: "none" } } }}
@@ -113,9 +115,14 @@ const Auth = ({ setOpenLogin, toggleLogin, setToggleLogin }) => {
                 },
               }}
             >
-              {!toggleLogin && <LoginModal setToggleLogin={setToggleLogin} />}
-              {toggleLogin && (
-                <CreateAccount reset={() => setToggleLogin(false)} />
+              {!tab && <LoginModal setToggleLogin={setToggleLogin} />}
+              {tab === 1 && (
+                <CreateAccount
+                  reset={() => {
+                    setTab(0);
+                    setToggleLogin(false);
+                  }}
+                />
               )}
             </Box>
           </Box>

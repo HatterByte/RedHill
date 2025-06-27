@@ -34,15 +34,6 @@ const Footer = () => {
           >
             Railway Admin Login
           </a>
-          |
-          <a
-            href="https://www.railmadad.in/mis-report-login"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:underline"
-          >
-            MIS Report Login
-          </a>
         </div>
       </div>
     </>

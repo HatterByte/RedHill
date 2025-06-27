@@ -79,7 +79,7 @@ const AnubhavForm = () => {
       <form
         ref={formRef}
         onSubmit={handleSubmit}
-        className="mt-6 relative w-full max-w-2xl mx-auto px-2 sm:px-4"
+        className=""
       >
         <div className="topBar flex flex-col sm:flex-row w-full justify-between border-b-[1px] border-gray-300 pb-2 h-auto sm:h-12 mb-4 gap-2 sm:gap-0">
           <h2 className="text-[#930b3e] text-xl sm:text-2xl font-bold">
