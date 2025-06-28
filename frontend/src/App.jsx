@@ -9,6 +9,7 @@ import ComplaintTable from "./components/User/ComplaintTable";
 import { useDispatch } from "react-redux";
 import { AlertProvider } from "./utils/AlertContext";
 import { LoginModalProvider } from "./utils/LoginModalContext";
+import AdminApp from "./admin/AdminApp";
 
 function App(props) {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function App(props) {
         {/* <div className="h-screen w-screen bg-[url('https://railmadad.indianrailways.gov.in/madad/final/images/body-bg.jpg')] bg-no-repeat bg-center bg-cover bg-fixed overflow-auto"> */}
         <BrowserRouter>
           <Routes>
+            <Route path="/admin/*" element={<AdminApp />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} /> {/* Renders at "/" */}
               <Route path="complaints" element={<ComplaintTable />} />
