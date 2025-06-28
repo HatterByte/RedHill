@@ -232,67 +232,6 @@ export const getUserComplaints = async (req, res) => {
 };
 
 /**
- * Get all complaints (admin only)
- * @route GET complaints
- */
-export const getAllComplaints = async (req, res) => {
-  try {
-    // Check if user is admin
-    if (!req.loggedIn || !req.user || !req.user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "Admin access required",
-      });
-    }
-
-    // Optional filtering
-    const { type, subtype, resolved, severity, startDate, endDate } = req.query;
-
-    const filter = {};
-
-    if (type) filter.type = type;
-    if (subtype) filter.subtype = subtype;
-    if (resolved !== undefined) filter.resolved = parseInt(resolved);
-    if (severity) filter.severity = severity;
-
-    // Date range filtering
-    if (startDate || endDate) {
-      filter.createdAt = {};
-      if (startDate) filter.createdAt.$gte = new Date(startDate);
-      if (endDate) filter.createdAt.$lte = new Date(endDate);
-    }
-
-    // Pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-
-    const complaints = await Complaints.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Complaints.countDocuments(filter);
-
-    return res.status(200).json({
-      success: true,
-      count: complaints.length,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-      complaints,
-    });
-  } catch (error) {
-    console.error("Error fetching complaints:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch complaints",
-      error: error.message,
-    });
-  }
-};
-
-/**
  * Update complaint details
  * @route PUT /complaints/:complaintId
  * @access Private (Only complaint owner)

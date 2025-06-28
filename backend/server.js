@@ -9,6 +9,8 @@ import UserRoutes from "./routes/user.js";
 import TestRoutes from "./routes/test.js";
 import ComplaintRoutes from "./routes/complaint.js";
 import otpRoutes from "./routes/otpRoutes.js";
+import AuthAdminRoutes from "./Admin/routes/authAdminRoute.js";
+import ComplaintAdminRoutes from "./Admin/routes/complaintAdminRoute.js";
 
 dotenv.config();
 const app = express();
@@ -38,6 +40,9 @@ app.use("/user", UserRoutes);
 app.use("/test", TestRoutes);
 app.use("/complaints", ComplaintRoutes);
 app.use("otp", otpRoutes);
+//Admin routes
+app.use("/admin/auth", AuthAdminRoutes);
+app.use("/admin/complaints", ComplaintAdminRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

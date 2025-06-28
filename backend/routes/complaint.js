@@ -3,7 +3,6 @@ import {
   registerComplaint,
   getComplaintById,
   getUserComplaints,
-  getAllComplaints,
   updateComplaint,
 } from "../controllers/complaintController.js";
 import auth from "../middleware/auth.js";
@@ -21,8 +20,5 @@ router.put("/:complaintId", auth, updateComplaint);
 
 // Get all complaints for a user (requires authentication)
 router.get("/user/:userId", auth, getUserComplaints);
-
-// Get all complaints (admin only)
-router.get("/", auth, getAllComplaints);
 
 export default router;

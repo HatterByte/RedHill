@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const trainSchema = new mongoose.Schema({
     trainCode:String,
-    trainDepartureDate: Date,
-    station:String,
-    category:Object
+    trainName:String,
+    source:String,
+    destination:String,
 });
 export default mongoose.model('trainData', trainSchema);
