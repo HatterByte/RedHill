@@ -43,20 +43,22 @@ const AdminLayout = ({ children }) => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Box sx={{ display: "flex" }}>
-          <Sidebar />
+          {/* Sidebar with padding top to offset AppBar */}
+          <Sidebar listProps={{ sx: { pt: 8 } }} />
           <Box
             sx={{
               flexGrow: 1,
               ml: "220px",
               minHeight: "100vh",
               bgcolor: "background.default",
+              pt: 8, // offset for AppBar height
             }}
           >
             <Topbar
               onToggleDarkMode={toggleDarkMode}
               darkMode={mode === "dark"}
             />
-            <Toolbar /> {/* Spacer for fixed Topbar */}
+            {/* <Toolbar /> Spacer removed, handled by pt */}
             <Box p={2}>{children}</Box>
           </Box>
         </Box>

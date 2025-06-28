@@ -12,7 +12,12 @@ const AdminRoutes = () => (
     <Route path="complaints" element={<Complaints />} />
     <Route path="complaints/:id" element={<ComplaintDetails />} />
     <Route path="classification" element={<ClassificationMonitor />} />
-    <Route path="user-history" element={<UserHistory />} />
+    <Route path="users" element={<UserHistory />} />
+    {/* Backward compatibility: redirect old user-history route to new users route */}
+    <Route
+      path="user-history"
+      element={<Navigate to="/admin/users" replace />}
+    />
     <Route path="*" element={<Navigate to="dashboard" replace />} />
   </Routes>
 );
