@@ -1,9 +1,10 @@
 import User from "../models/User.js";
 import { sendMessage } from "../utils/sendMessage.js";
+import logger from "../utils/logger.js";
 
 // Telegram Webhook Handler
 export const telegramWebhook = async (req, res) => {
-  // console.log("Received Webhook:", req.body);
+  logger.info(`Webhook received: ${JSON.stringify(req.body)}`);
 
   const message = req.body.message;
   if (!message) return res.sendStatus(200); // Ignore empty requests
@@ -13,6 +14,7 @@ export const telegramWebhook = async (req, res) => {
   const contact = message.contact; // If user shares contact
 
   if (text === "/start") {
+    logger.info(`Action: /start command received. Prompting user to send phone number. [chatId: ${chatId}]`);
     await sendMessage(
       chatId,
       "👋 Welcome! Please send your 10-digit phone number to register for OTP services.",
@@ -26,6 +28,7 @@ export const telegramWebhook = async (req, res) => {
       }
     );
   } else if (contact) {
+    logger.info(`Action: Contact shared. Phone: ${contact.phone_number}, chatId: ${chatId}`);
     const phoneNumber = contact.phone_number.slice(2);
     if (phoneNumber.length === 10) {
       let user = await User.findOneAndUpdate(
@@ -41,14 +44,17 @@ export const telegramWebhook = async (req, res) => {
         `✅ Registered! Your phone (${phoneNumber}) is linked for OTP.`,
         {remove_keyboard: true,}
       );
+      logger.info(`Action: Phone number valid. Registered/updated user for OTP. [phone: ${phoneNumber}, chatId: ${chatId}]`);
     } else {
       await sendMessage(
         chatId,
         "⚠️ Invalid phone number format. Please enter 10 digits manually.",
         {remove_keyboard: true,}
       );
+      logger.info(`Action: Invalid phone number format received. [phone: ${contact.phone_number}, chatId: ${chatId}]`);
     }
   } else if (/^\d{10}$/.test(text)) {
+    logger.info(`Action: 10-digit phone number received as text. Registering/updating user. [phone: ${text}, chatId: ${chatId}]`);
     let user = await User.findOneAndUpdate(
       { phone: text },
       { chatId },
@@ -65,10 +71,12 @@ export const telegramWebhook = async (req, res) => {
       {remove_keyboard: true,}
     );
   } else if (text === "❌ Close") {
+    logger.info(`Action: Close command received. Removing keyboard. [chatId: ${chatId}]`);
     await sendMessage(chatId, "", {
       remove_keyboard: true,
     });
   } else {
+    logger.info(`Action: Unrecognized input. Prompting user to send phone number. [chatId: ${chatId}]`);
     await sendMessage(
       chatId,
       "Please send your mobile number to register either manually or by clicking the button below if you haven't done so yet.",

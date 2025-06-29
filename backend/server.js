@@ -13,6 +13,8 @@ import AuthAdminRoutes from "./Admin/routes/authAdminRoute.js";
 import ComplaintAdminRoutes from "./Admin/routes/complaintAdminRoute.js";
 import ComplaintStatsAdminRoutes from "./Admin/routes/complaintStatsAdminRoute.js";
 import complaintHeatmapAdminRoute from "./Admin/routes/complaintHeatmapAdminRoute.js";
+import morgan from "morgan";
+import logger from "./utils/logger.js";
 
 dotenv.config();
 const app = express();
@@ -33,6 +35,15 @@ connectRedis();
 //Init Middleware
 app.use(express.json({ extended: false }));
 
+// Morgan middleware to log HTTP requests using winston
+app.use(
+  morgan("combined", {
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+);
+
 // Routes
 app.get("/", (req, res) => {
   res.send("API Running");
@@ -41,7 +52,7 @@ app.use("/auth", AuthRoutes);
 app.use("/user", UserRoutes);
 app.use("/test", TestRoutes);
 app.use("/complaints", ComplaintRoutes);
-app.use("otp", otpRoutes);
+app.use("/otp", otpRoutes);
 //Admin routes
 app.use("/admin/auth", AuthAdminRoutes);
 app.use("/admin/complaints", ComplaintAdminRoutes);
