@@ -69,26 +69,49 @@ const AdminComplaintModal = ({ complaint, open, onClose }) => {
               Attached Media ({complaint.media.length})
             </Typography>
             <Box display="flex" flexWrap="wrap" gap={2} mt={1}>
-              {complaint.media.map((mediaUrl, idx) => (
-                <a
-                  href={mediaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={idx}
-                  style={{ display: "block" }}
-                >
-                  <img
-                    src={mediaUrl}
-                    alt={`Attachment ${idx + 1}`}
-                    style={{
-                      maxHeight: 120,
-                      borderRadius: 8,
-                      background: "#fff",
-                      boxShadow: "0 1px 4px #0001",
+              {complaint.media.map((mediaUrl, idx) => {
+                const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl);
+                return isVideo ? (
+                  <Button
+                    key={idx}
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      minWidth: 120,
+                      height: 120,
+                      borderRadius: 2,
+                      p: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                  />
-                </a>
-              ))}
+                    onClick={() => window.open(mediaUrl, "_blank")}
+                  >
+                    <Box sx={{ fontSize: 32, mb: 0.5 }}>🎬</Box>
+                    <Typography variant="caption">View Video</Typography>
+                  </Button>
+                ) : (
+                  <a
+                    href={mediaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key={idx}
+                    style={{ display: "block" }}
+                  >
+                    <img
+                      src={mediaUrl}
+                      alt={`Attachment ${idx + 1}`}
+                      style={{
+                        maxHeight: 120,
+                        borderRadius: 8,
+                        background: "#fff",
+                        boxShadow: "0 1px 4px #0001",
+                      }}
+                    />
+                  </a>
+                );
+              })}
             </Box>
           </Box>
         )}

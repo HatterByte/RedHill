@@ -106,12 +106,27 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                   </p>
                   <div className="bg-gray-100/70 p-4 rounded-lg border border-gray-200/60 hover:bg-gray-200/50">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {complaint.media.map((mediaUrl, index) => (
-                        <div key={index} className="relative group">
+                      {complaint.media.map((mediaUrl, index) => {
+                        const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl);
+                        return isVideo ? (
+                          <button
+                            key={index}
+                            type="button"
+                            className="w-full h-full bg-black/10 rounded-lg flex flex-col items-center justify-center p-2 border border-gray-200 hover:bg-black/20 transition"
+                            onClick={() => window.open(mediaUrl, "_blank")}
+                          >
+                            <span className="text-3xl mb-1">🎬</span>
+                            <span className="text-xs text-gray-700">
+                              View Video
+                            </span>
+                          </button>
+                        ) : (
                           <a
                             href={mediaUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            key={index}
+                            className="block"
                           >
                             <img
                               className="h-auto max-h-[200px] w-full rounded-lg object-contain bg-white shadow-sm"
@@ -124,8 +139,8 @@ const ComplaintModal = ({ complaint, setSelectedComplaint }) => {
                               </span>
                             </div>
                           </a>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

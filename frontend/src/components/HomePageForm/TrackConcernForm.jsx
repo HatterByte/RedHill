@@ -32,8 +32,13 @@ const TrackConcernForm = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto mt-8 px-2 sm:px-4">
-      <form onSubmit={handleSubmit} className="bg-white/90 rounded-lg shadow-md p-6 flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-[#930b3e] mb-2">Track Your Concern</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white/90 rounded-lg shadow-md p-6 flex flex-col gap-6"
+      >
+        <h2 className="text-2xl font-bold text-[#930b3e] mb-2">
+          Track Your Concern
+        </h2>
         <label className="text-base sm:text-lg font-medium text-[#7c7c7c]">
           Reference Number
           <input
@@ -55,25 +60,33 @@ const TrackConcernForm = () => {
       </form>
       {complaint && (
         <div className="mt-8 bg-white/90 rounded-lg shadow-md p-6">
-          <h3 className="text-2xl font-bold text-[#900b3d] mb-2">Complaint Details</h3>
+          <h3 className="text-2xl font-bold text-[#900b3d] mb-2">
+            Complaint Details
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <span className="font-semibold">Name:</span> {complaint.name || "N/A"}
+              <span className="font-semibold">Name:</span>{" "}
+              {complaint.name || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Phone:</span> {complaint.phone || "N/A"}
+              <span className="font-semibold">Phone:</span>{" "}
+              {complaint.phone || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Train Number:</span> {complaint.trainCode || "N/A"}
+              <span className="font-semibold">Train Number:</span>{" "}
+              {complaint.trainCode || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Train Name:</span> {complaint.trainName || "N/A"}
+              <span className="font-semibold">Train Name:</span>{" "}
+              {complaint.trainName || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Category:</span> {complaint.type || "N/A"}
+              <span className="font-semibold">Category:</span>{" "}
+              {complaint.type || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Sub-Category:</span> {complaint.subtype || "N/A"}
+              <span className="font-semibold">Sub-Category:</span>{" "}
+              {complaint.subtype || "N/A"}
             </div>
           </div>
           <div className="mb-2">
@@ -84,7 +97,11 @@ const TrackConcernForm = () => {
           </div>
           <div className="mb-2">
             <span className="font-semibold">Status:</span>
-            <span className={`ml-2 font-bold ${complaint.resolved === 0 ? "text-yellow-600" : "text-green-700"}`}>
+            <span
+              className={`ml-2 font-bold ${
+                complaint.resolved === 0 ? "text-yellow-600" : "text-green-700"
+              }`}
+            >
               {complaint.resolved === 0 ? "Pending" : "Completed"}
             </span>
           </div>
@@ -92,21 +109,34 @@ const TrackConcernForm = () => {
             <div className="mb-2">
               <span className="font-semibold">Attached Media:</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                {complaint.media.map((mediaUrl, idx) => (
-                  <a
-                    key={idx}
-                    href={mediaUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <img
-                      src={mediaUrl}
-                      alt={`Attachment ${idx + 1}`}
-                      className="h-auto max-h-[200px] w-full rounded-lg object-contain bg-white shadow-sm"
-                    />
-                  </a>
-                ))}
+                {complaint.media.map((mediaUrl, idx) => {
+                  const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl);
+                  return isVideo ? (
+                    <button
+                      key={idx}
+                      type="button"
+                      className="w-full h-full bg-black/10 rounded-lg flex flex-col items-center justify-center p-2 border border-gray-200 hover:bg-black/20 transition"
+                      onClick={() => window.open(mediaUrl, "_blank")}
+                    >
+                      <span className="text-3xl mb-1">🎬</span>
+                      <span className="text-xs text-gray-700">View Video</span>
+                    </button>
+                  ) : (
+                    <a
+                      key={idx}
+                      href={mediaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <img
+                        src={mediaUrl}
+                        alt={`Attachment ${idx + 1}`}
+                        className="h-auto max-h-[200px] w-full rounded-lg object-contain bg-white shadow-sm"
+                      />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}

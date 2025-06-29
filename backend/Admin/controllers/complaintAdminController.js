@@ -83,12 +83,13 @@ export const getAllComplaints = async (req, res) => {
 export const updateComplaint = async (req, res) => {
   try {
     const { id } = req.params;
-    const { resolved, type, subtype } = req.body;
+    const { resolved, type, severity, subtype } = req.body;
     const updateFields = {};
     if (typeof resolved !== "undefined")
       updateFields.resolved = Number(resolved); // ensure number type
     if (type) updateFields.type = type;
     if (subtype) updateFields.subtype = subtype;
+    if (severity) {updateFields.severity = severity; }
     console.log("Update Fields:", updateFields);
     const updatedComplaint = await Complaint.findByIdAndUpdate(
       id,
@@ -121,17 +122,18 @@ export const getComplaintsWithImages = async (req, res) => {
     limit = parseInt(limit);
     const filter = { media: { $exists: true, $not: { $size: 0 } } };
     const complaints = await Complaint.find(filter)
-      .select("media type subtype")
+      .select("media type subtype severity")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
     const total = await Complaint.countDocuments(filter);
-    // Format response to include image links, type, and subtype
+    // Format response to include image links, type, subtype, severity, and reference no
     const results = complaints.map((c) => ({
-      id: c._id,
+      referenceNo: c._id,
       images: c.media,
       type: c.type,
       subtype: c.subtype,
+      severity: c.severity,
     }));
     return res.status(200).json({
       complaints: results,
