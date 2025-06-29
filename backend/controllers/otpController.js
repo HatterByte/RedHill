@@ -38,12 +38,14 @@ export const telegramWebhook = async (req, res) => {
       }
       await sendMessage(
         chatId,
-        `✅ Registered! Your phone (${phoneNumber}) is linked for OTP.`
+        `✅ Registered! Your phone (${phoneNumber}) is linked for OTP.`,
+        {remove_keyboard: true,}
       );
     } else {
       await sendMessage(
         chatId,
-        "⚠️ Invalid phone number format. Please enter 10 digits manually."
+        "⚠️ Invalid phone number format. Please enter 10 digits manually.",
+        {remove_keyboard: true,}
       );
     }
   } else if (/^\d{10}$/.test(text)) {
@@ -59,7 +61,8 @@ export const telegramWebhook = async (req, res) => {
 
     await sendMessage(
       chatId,
-      `✅ Registered! Your phone (${text}) is linked for OTP.`
+      `✅ Registered! Your phone (${text}) is linked for OTP.`,
+      {remove_keyboard: true,}
     );
   } else if (text === "❌ Close") {
     await sendMessage(chatId, "", {

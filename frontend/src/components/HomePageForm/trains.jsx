@@ -7,6 +7,7 @@ import { getUser } from "../../actions/auth.actions";
 import ReCAPTCHA from "react-google-recaptcha";
 import { axiosInstance } from "../../utils/axios";
 import { useGlobalAlert } from "../../utils/AlertContext";
+import QRCodeModal from "./QRCodeModal";
 
 const Trains = (props) => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const Trains = (props) => {
     media: [],
     description: "",
   });
+  const [showQRModal, setShowQRModal] = useState(false);
   const handleChange = (e) => {
     const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     return value;
@@ -268,16 +270,39 @@ const Trains = (props) => {
               className="w-full sm:w-4/9 border-[1px] h-13 border-[#d9d9d9] p-2 text-xl sm:text-2xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
             />
             {!toggle && (
-              <button
-                type="button"
-                className="w-full sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleGenerateOTP();
-                }}
-              >
-                Send OTP
-              </button>
+              <>
+                <button
+                  type="button"
+                  className="w-full sm:w-28 h-13 text-white p-2 rounded-lg cursor-pointer bg-[#75002b] hover:bg-[#f58220] transition-all duration-500 ease-in-out"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleGenerateOTP();
+                  }}
+                >
+                  Send OTP
+                </button>
+                <button
+                  type="button"
+                  className="w-full sm:w-12 h-13 ml-2 flex items-center justify-center bg-[#e1e1e1] hover:bg-[#f58220] rounded-lg transition-all duration-500 ease-in-out"
+                  title="Start Telegram Bot"
+                  onClick={() => setShowQRModal(true)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 text-[#75002b]"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75V19.5A2.25 2.25 0 006.75 21.75h10.5A2.25 2.25 0 0019.5 19.5V9.75"
+                    />
+                  </svg>
+                </button>
+              </>
             )}
           </div>
           {toggle && (
@@ -595,6 +620,16 @@ const Trains = (props) => {
           setRegisteredComplaint(null);
         }}
       />
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <QRCodeModal
+          show={showQRModal}
+          onClose={() => setShowQRModal(false)}
+          url={import.meta.env.VITE_OTP_ACTIVATION_URL}
+          title="Start Telegram Bot"
+        />
+      )}
     </>
   );
 };
