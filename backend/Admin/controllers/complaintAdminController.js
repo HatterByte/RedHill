@@ -89,7 +89,9 @@ export const updateComplaint = async (req, res) => {
       updateFields.resolved = Number(resolved); // ensure number type
     if (type) updateFields.type = type;
     if (subtype) updateFields.subtype = subtype;
-    if (severity) {updateFields.severity = severity; }
+    if (severity) {
+      updateFields.severity = severity;
+    }
     console.log("Update Fields:", updateFields);
     const updatedComplaint = await Complaint.findByIdAndUpdate(
       id,
@@ -143,6 +145,48 @@ export const getComplaintsWithImages = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Complaints With Images Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Get all users with their complaints count and ids
+ * @route   GET /admin/complaints/complaints-summary
+ * @access  Admin
+ * Query params: limit, page
+ */
+export const getUsersComplaintsSummary = async (req, res) => {
+  try {
+    let { page = 1, limit = 20 } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    // Group by phone, get complaint ids for each
+    const agg = [
+      {
+        $group: {
+          _id: "$phone",
+          complaints: { $push: "$_id" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ];
+    const results = await Complaint.aggregate(agg);
+    const total = await Complaint.distinct("phone");
+    res.json({
+      users: results.map((u) => ({
+        phone: u._id,
+        complaints: u.complaints,
+        count: u.count,
+      })),
+      total: total.length,
+      page,
+      totalPages: Math.ceil(total.length / limit),
+    });
+  } catch (error) {
+    console.error("User Complaints Summary Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

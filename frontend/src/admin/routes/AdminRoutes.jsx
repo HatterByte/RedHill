@@ -5,6 +5,7 @@ import Complaints from "../pages/Complaints";
 import ComplaintDetails from "../pages/ComplaintDetails";
 import ClassificationMonitor from "../pages/ClassificationMonitor";
 import UserHistory from "../pages/UserHistory";
+import UserComplaintsTable from "../pages/UserComplaintsTable";
 
 const AdminRoutes = () => (
   <Routes>
@@ -13,11 +14,7 @@ const AdminRoutes = () => (
     <Route path="complaints/:id" element={<ComplaintDetails />} />
     <Route path="classification" element={<ClassificationMonitor />} />
     <Route path="users" element={<UserHistory />} />
-    {/* Backward compatibility: redirect old user-history route to new users route */}
-    <Route
-      path="user-history"
-      element={<Navigate to="/admin/users" replace />}
-    />
+    <Route path="user-history/:phone" element={<UserComplaintsTable />} />
     <Route path="*" element={<Navigate to="dashboard" replace />} />
   </Routes>
 );
