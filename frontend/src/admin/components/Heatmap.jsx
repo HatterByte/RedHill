@@ -41,14 +41,21 @@ const Heatmap = () => {
       heatmapRef.current = cal;
 
       // Color ranges
-      const purpleRange = [
+      const darkRange = [
         "#18181b", // for 0 value (very dark, neutral)
         "#ABAAC3",
         "#7D7C9E",
         "#5F5E79",
         "#3D3B4F",
-        "#23222B", // almost black
       ];
+      const maroonRange = [
+        "#fbe9ee", // for 0 value (very light pink)
+        "#f5b6c6",
+        "#e57399",
+        "#c2185b",
+        "#75002b",
+      ];
+      const colorRange = isDark ? darkRange : maroonRange;
 
       cal.paint(
         {
@@ -82,7 +89,7 @@ const Heatmap = () => {
           scale: {
             color: {
               type: "threshold",
-              range: purpleRange,
+              range: colorRange,
               domain: [1, 3, 6, 10],
             },
           },

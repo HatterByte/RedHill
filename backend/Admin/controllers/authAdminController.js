@@ -44,3 +44,30 @@ export const loginWithPassword = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+/**
+ * @desc    Admin logout
+ * @route   POST /admin/auth/logout
+ * @access  Admin
+ */
+export const logoutAdmin = async (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    if (token) {
+      // Decode token to get user id
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      await redisClient.del(`auth:${decoded._id}`);
+    }
+    res
+      .clearCookie("accessToken", {
+        httpOnly: true,
+        secure: false, // set to true in production
+        sameSite: "lax",
+      })
+      .status(200)
+      .json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Logout Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
