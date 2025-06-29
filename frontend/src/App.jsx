@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { AlertProvider } from "./utils/AlertContext";
 import { LoginModalProvider } from "./utils/LoginModalContext";
 import AdminApp from "./admin/AdminApp";
+import NotFound from "./pages/NotFound";
 
 function App(props) {
   const dispatch = useDispatch();
@@ -30,6 +31,8 @@ function App(props) {
               <Route path="complaints" element={<ComplaintTable />} />
               {/* <Route path="contact" element={<ContactPage />} /> */}
             </Route>
+            {/* 404 Not Found Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
         {/* </div> */}

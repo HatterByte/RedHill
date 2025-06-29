@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import otpReducer from './otp.reducer';
-import authReducer from './auth.reducer.'; // Import your auth reducer
+import authReducer from './auth.reducer'; // Import your auth reducer
 // Import your reducers here
 
 const rootReducer = combineReducers({

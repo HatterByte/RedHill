@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FAQModal from "./FAQModal";
-import AdminLoginModal from "./AdminLoginModal";
+import AdminLoginModal from "../admin/components/AdminLoginModal";
 import { useGlobalAlert } from "../utils/AlertContext";
 
 const Footer = () => {
@@ -35,7 +35,7 @@ const Footer = () => {
       />
       <div className="flex flex-col md:flex-row w-full h-auto md:h-13 bg-[#75002b] justify-center md:justify-evenly items-center mt-auto px-2 py-3 gap-2 md:gap-0 text-center">
         <div className="text-white text-xs md:text-base">
-          Copyright ©2024 REDHILL. All Rights Reserved.
+          Copyright ©2025 RedHill || All Rights Reserved.
         </div>
         <div className="text-white text-xs md:text-base flex flex-wrap justify-center gap-x-2 gap-y-1">
           <a href="/" className="hover:underline mr-1">
