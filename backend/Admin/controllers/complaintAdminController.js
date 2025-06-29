@@ -5,7 +5,7 @@ import mongoose from "mongoose";
  * @desc    Get all complaints (admin)
  * @route   GET /admin/complaints
  * @access  Admin
- * Query params: page, limit, type, subtype, resolved, severity, train, dateRange (daily/weekly/monthly)
+ * Query params: page, limit, phone, type, subtype, resolved, severity, train, dateRange (daily/weekly/monthly)
  */
 export const getAllComplaints = async (req, res) => {
   try {

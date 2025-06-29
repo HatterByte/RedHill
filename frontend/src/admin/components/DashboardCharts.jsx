@@ -15,25 +15,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Dummy data
-const statusData = [
-  { name: "Pending", value: 120 },
-  { name: "Resolved", value: 380 },
-];
-const typeData = [
-  { type: "Cleanliness", count: 180 },
-  { type: "Security", count: 90 },
-  { type: "Delay", count: 60 },
-  { type: "Other", count: 50 },
-];
-const trainData = [
-  { train: "12345", complaints: 30 },
-  { train: "23456", complaints: 22 },
-  { train: "34567", complaints: 18 },
-  { train: "45678", complaints: 12 },
-  { train: "56789", complaints: 8 },
-];
-
 const days = ["S", "M", "T", "W", "T", "F", "S"];
 
 // Generate a 7x12 grid (7 days x 12 weeks)
@@ -45,24 +26,43 @@ const getHeatmapData = (trainNo) => {
   );
 };
 
-const DashboardCharts = () => {
+const DashboardCharts = ({ topTypes = [], stats = {} }) => {
   const [trainNo, setTrainNo] = useState("");
   const heatmap = getHeatmapData(trainNo);
   const theme = useTheme();
-  // Use theme colors for charts and heatmap
   const isDark = theme.palette.mode === "dark";
-  // Pie chart: yellow/maroon for light, cyan/pink for dark
+  // Pie chart: use stats if available
+  const pieData =
+    stats &&
+    typeof stats.resolved === "number" &&
+    typeof stats.pending === "number"
+      ? [
+          { name: "Pending", value: stats.pending },
+          { name: "Resolved", value: stats.resolved },
+        ]
+      : [
+          { name: "Pending", value: 120 },
+          { name: "Resolved", value: 380 },
+        ];
+  // Bar chart: use topTypes if available
+  const barData =
+    Array.isArray(topTypes) && topTypes.length > 0
+      ? topTypes.map((t) => ({ type: t.type, count: t.count }))
+      : [
+          { type: "Cleanliness", count: 180 },
+          { type: "Security", count: 90 },
+          { type: "Delay", count: 60 },
+          { type: "Other", count: 50 },
+        ];
+  // Chart colors
   const PIE_COLORS = isDark
     ? [theme.palette.info.light, theme.palette.primary.light]
     : [theme.palette.secondary.main, theme.palette.primary.main];
-  // Bar chart: maroon for light, yellow for dark
   const BAR_COLOR = isDark
     ? theme.palette.secondary.light
     : theme.palette.primary.main;
-  // Axis/grid colors
   const AXIS_COLOR = isDark ? theme.palette.grey[400] : theme.palette.grey[700];
   const GRID_COLOR = isDark ? theme.palette.grey[800] : theme.palette.grey[300];
-  // Heatmap colors
   const HEATMAP_COLORS = [
     isDark ? "#23232a" : "#e0e0e0",
     isDark ? "#4dd0e1" : theme.palette.secondary.light,
@@ -85,7 +85,7 @@ const DashboardCharts = () => {
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie
-                data={statusData}
+                data={pieData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -93,7 +93,7 @@ const DashboardCharts = () => {
                 outerRadius={70}
                 label
               >
-                {statusData.map((entry, idx) => (
+                {pieData.map((entry, idx) => (
                   <Cell
                     key={`cell-${idx}`}
                     fill={PIE_COLORS[idx % PIE_COLORS.length]}
@@ -113,10 +113,10 @@ const DashboardCharts = () => {
         </ChartCard>
       </Grid>
       <Grid item xs={12} md={4}>
-        <ChartCard title="Complaint Type Distribution">
+        <ChartCard title="Top Complaint Types">
           <ResponsiveContainer width="100%" height={220}>
             <BarChart
-              data={typeData}
+              data={barData}
               margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />

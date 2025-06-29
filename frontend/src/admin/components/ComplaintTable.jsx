@@ -17,7 +17,9 @@ const ComplaintTable = ({
   rowsPerPage,
   total,
   onPageChange,
+  onRowsPerPageChange,
   onRowClick,
+  rowsPerPageOptions = [5, 10, 20],
 }) => (
   <Paper sx={{ width: "100%", overflow: "hidden" }}>
     <TableContainer>
@@ -63,8 +65,8 @@ const ComplaintTable = ({
       page={page}
       onPageChange={(_, newPage) => onPageChange(newPage)}
       rowsPerPage={rowsPerPage}
-      rowsPerPageOptions={[10, 20, 50]}
-      onRowsPerPageChange={() => {}}
+      rowsPerPageOptions={rowsPerPageOptions}
+      onRowsPerPageChange={onRowsPerPageChange}
     />
   </Paper>
 );
