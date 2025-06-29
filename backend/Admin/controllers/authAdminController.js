@@ -16,7 +16,8 @@ export const loginWithPassword = async (req, res) => {
 
     const user = await User.findOne({ phone });
     if (!user) return res.status(404).json({ message: "User not found" });
-    if(!user.isAdmin) return res.status(403).json({ message: "Access denied" });
+    if (!user.isAdmin)
+      return res.status(403).json({ message: "Access denied" });
     if (!user.password)
       return res.status(403).json({ message: "Set a password first" });
 
@@ -27,9 +28,12 @@ export const loginWithPassword = async (req, res) => {
       expiresIn: "7d",
     });
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     const options = {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      secure: isProduction, // ✅ HTTPS only in production (Render uses HTTPS)
+      sameSite: isProduction ? "None" : "Lax",
       httpOnly: true,
     };
     const safeUser = user.toObject(); // Convert to plain object
@@ -58,11 +62,12 @@ export const logoutAdmin = async (req, res) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       await redisClient.del(`auth:${decoded._id}`);
     }
+    const isProduction = process.env.NODE_ENV === "production";
     res
       .clearCookie("accessToken", {
         httpOnly: true,
-        secure: false, // set to true in production
-        sameSite: "lax",
+        secure: isProduction, // ✅ HTTPS only in production (Render uses HTTPS)
+        sameSite: isProduction ? "None" : "Lax",
       })
       .status(200)
       .json({ message: "Logout successful" });

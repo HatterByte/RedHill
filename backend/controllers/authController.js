@@ -118,9 +118,11 @@ export const registerUser = async (req, res) => {
     user.name = name;
     await user.save();
     await redisClient.del(`otp:${phone}`);
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       expires: new Date(Date.now() + 15 * 60 * 1000),
-      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       httpOnly: true,
     };
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -161,10 +163,11 @@ export const verifyOTPLogin = async (req, res) => {
     await redisClient.del(`otp:${phone}`);
     // Find user or create one if not exists
     let user = await User.findOne({ phone }).select("-password");
-
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       httpOnly: true,
     };
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -205,10 +208,11 @@ export const loginWithPassword = async (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      secure: false, // TO BE SET TO TRUE IN PRODUCTION
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       httpOnly: true,
     };
     const safeUser = user.toObject(); // Convert to plain object
@@ -278,8 +282,10 @@ export const logoutUser = async (req, res) => {
     const userId = decoded._id;
     await redisClient.del(`auth:${userId}`);
 
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("accessToken", {
-      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       secure: false,
     });
 

@@ -19,11 +19,11 @@ import logger from "./utils/logger.js";
 dotenv.config();
 const app = express();
 
+const isProduction = process.env.NODE_ENV === "production";
 app.use(
   cors({
-    // origin: 'http://localhost:5173', // Adjust for your frontend
-    origin: true,
-    credentials: true, // Allow credentials (cookies)
+    origin: isProduction ? process.env.FRONTEND_URL :'http://localhost:5173',
+    credentials: true,
   })
 );
 app.use(cookieParser());
