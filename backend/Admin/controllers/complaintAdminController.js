@@ -22,7 +22,7 @@ export const getAllComplaints = async (req, res) => {
     } = req.query;
     page = parseInt(page);
     limit = parseInt(limit);
-    console.log("Query Params:", req.query);
+    // console.log("Query Params:", req.query);
     const filter = {};
     if (type) filter.type = type;
     if (subtype) filter.subtype = subtype;
@@ -53,7 +53,7 @@ export const getAllComplaints = async (req, res) => {
       }
       if (startDate) filter.createdAt = { $gte: startDate };
     }
-    console.log(filter);
+    // console.log(filter);
     let complaints, total;
 
     // Pagination and normal fetch

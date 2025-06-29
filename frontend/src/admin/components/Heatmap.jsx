@@ -1,63 +1,193 @@
-import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Button,
+  useTheme,
+} from "@mui/material";
+import CalHeatmap from "cal-heatmap";
+import Tooltip from "cal-heatmap/plugins/Tooltip";
+import LegendLite from "cal-heatmap/plugins/LegendLite";
+import CalendarLabel from "cal-heatmap/plugins/CalendarLabel";
+import "cal-heatmap/cal-heatmap.css";
+import api from "../../admin/utils/api";
 
-// Dummy data for heatmap
-const dummyData = [
-  [1, 2, 3, 4, 5, 6, 7],
-  [2, 3, 4, 5, 6, 7, 8],
-  [3, 4, 5, 6, 7, 8, 9],
-  [4, 5, 6, 7, 8, 9, 10],
-];
+const Heatmap = () => {
+  const [loading, setLoading] = useState(true);
+  const calRef = useRef(null);
+  const heatmapRef = useRef(null);
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
-const getColor = (value) => {
-  const colors = [
-    "#e0f7fa",
-    "#b2ebf2",
-    "#80deea",
-    "#4dd0e1",
-    "#26c6da",
-    "#00bcd4",
-    "#0097a7",
-    "#006064",
-    "#004d40",
-    "#00251a",
-  ];
-  return colors[Math.min(value, colors.length - 1)];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await api.get("/complaints/heatmap");
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && calRef.current) {
+      // Initialize cal-heatmap
+      const cal = new CalHeatmap();
+      heatmapRef.current = cal;
+
+      // Color ranges
+      const purpleRange = [
+        "#18181b", // for 0 value (very dark, neutral)
+        "#ABAAC3",
+        "#7D7C9E",
+        "#5F5E79",
+        "#3D3B4F",
+        "#23222B", // almost black
+      ];
+
+      cal.paint(
+        {
+          itemSelector: "#ex-ghDay",
+          domain: {
+            type: "month",
+            gutter: 4,
+            label: { text: "MMM", textAlign: "start", position: "top" },
+          },
+          subDomain: {
+            type: "ghDay",
+            radius: 2,
+            width: 11,
+            height: 11,
+            gutter: 4,
+          },
+          range: 12,
+          data: {
+            source: `${
+              import.meta.env.VITE_BASE_URL
+            }/admin/complaints/heatmap?start={{start=YYYY-MM-DD}}&end={{end=YYYY-MM-DD}}`,
+            type: "json",
+            requestInit: {
+              credentials: "include",
+              // headers: { ... } // add custom headers if needed
+            },
+            x: "date",
+            y: "value",
+            defaultValue: 0,
+          },
+          scale: {
+            color: {
+              type: "threshold",
+              range: purpleRange,
+              domain: [1, 3, 6, 10],
+            },
+          },
+        },
+        [
+          [
+            Tooltip,
+            {
+              text: (date, value, dayjsDate) =>
+                (value ? value : "No") +
+                " complaints on " +
+                dayjsDate.format("dddd, MMMM D, YYYY"),
+            },
+          ],
+          [
+            LegendLite,
+            {
+              includeBlank: true,
+              itemSelector: "#ex-ghDay-legend",
+              radius: 2,
+              width: 11,
+              height: 11,
+              gutter: 4,
+            },
+          ],
+          [
+            CalendarLabel,
+            {
+              width: 30,
+              textAlign: "start",
+              text: () =>
+                window.dayjs
+                  .weekdaysShort()
+                  .map((d, i) => (i % 2 === 0 ? "" : d)),
+              padding: [25, 0, 0, 0],
+            },
+          ],
+        ]
+      );
+    }
+
+    // Cleanup
+    return () => {
+      if (heatmapRef.current) {
+        try {
+          heatmapRef.current.destroy();
+        } catch (e) {}
+      }
+    };
+  }, [loading, theme.palette.mode]);
+
+  // Navigation handlers
+  const handlePrev = () => heatmapRef.current && heatmapRef.current.previous();
+  const handleNext = () => heatmapRef.current && heatmapRef.current.next();
+
+  return (
+    <Card sx={{ minWidth: 900, p: 2 }}>
+      <CardContent>
+        <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+          Complaints Heatmap
+        </Typography>
+        {loading ? (
+          <Typography>Loading...</Typography>
+        ) : (
+          <Box>
+            <div id="ex-ghDay" ref={calRef} style={{ minHeight: "150px" }} />
+            <Box mt={2} display="flex" alignItems="center">
+              <Button size="small" variant="outlined" onClick={handlePrev}>
+                ← Previous
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                sx={{ ml: 1 }}
+                onClick={handleNext}
+              >
+                Next →
+              </Button>
+              <Box flex={1} />
+              <span style={{ color: "#768390", fontSize: 12 }}>Less</span>
+              <div
+                id="ex-ghDay-legend"
+                style={{ display: "inline-block", margin: "0 4px" }}
+              ></div>
+              <span style={{ color: "#768390", fontSize: 12 }}>More</span>
+            </Box>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  );
 };
 
-const Heatmap = () => (
-  <Card sx={{ minWidth: 300, p: 2 }}>
-    <CardContent>
-      <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-        Complaints Heatmap (Dummy)
-      </Typography>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${dummyData[0].length}, 32px)`,
-          gap: 1,
-        }}
-      >
-        {dummyData.flat().map((val, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              width: 32,
-              height: 32,
-              background: getColor(val),
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 1,
-              fontWeight: 500,
-            }}
-          >
-            {val}
-          </Box>
-        ))}
-      </Box>
-    </CardContent>
-  </Card>
-);
-
 export default Heatmap;
+
+/*
+In your backend controller, change:
+res.status(200).json({ days });
+to:
+res.status(200).json(days);
+
+And change:
+days.push({ date: dateStr, count: dayMap[dateStr] || 0 });
+to:
+days.push({ date: dateStr, value: dayMap[dateStr] || 0 });
+
+This will make your backend response compatible with cal-heatmap's remote loading.
+*/

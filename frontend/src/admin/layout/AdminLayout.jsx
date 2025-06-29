@@ -17,7 +17,7 @@ const getTheme = (mode) =>
     palette: {
       mode,
       primary: {
-        main: "#75002b", // RailMadad maroon
+        main: mode === "dark" ? "#e0e0e0" : "#75002b", // Light gray in dark mode, maroon in light
       },
       secondary: {
         main: "#f9c846", // RailMadad yellow
@@ -29,6 +29,21 @@ const getTheme = (mode) =>
     },
     typography: {
       fontFamily: 'Inter, "Segoe UI", Arial, sans-serif',
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            ...(mode === "dark" && {
+              color: "#18181b", // dark text on light gray
+              backgroundColor: "#e0e0e0",
+              "&:hover": {
+                backgroundColor: "#bdbdbd",
+              },
+            }),
+          },
+        },
+      },
     },
   });
 

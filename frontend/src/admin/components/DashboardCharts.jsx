@@ -56,11 +56,11 @@ const DashboardCharts = ({ topTypes = [], stats = {} }) => {
         ];
   // Chart colors
   const PIE_COLORS = isDark
-    ? [theme.palette.info.light, theme.palette.primary.light]
-    : [theme.palette.secondary.main, theme.palette.primary.main];
+    ? ["#e0e0e0", "#5F5E79"] // light gray, maroon in dark mode
+    : [theme.palette.secondary.main, "#75002b"]; // yellow, maroon in light mode
   const BAR_COLOR = isDark
-    ? theme.palette.secondary.light
-    : theme.palette.primary.main;
+    ? "#5F5E79" // light gray in dark mode
+    : "#75002b"; // maroon in light mode
   const AXIS_COLOR = isDark ? theme.palette.grey[400] : theme.palette.grey[700];
   const GRID_COLOR = isDark ? theme.palette.grey[800] : theme.palette.grey[300];
   const HEATMAP_COLORS = [
@@ -136,118 +136,6 @@ const DashboardCharts = ({ topTypes = [], stats = {} }) => {
               />
             </BarChart>
           </ResponsiveContainer>
-        </ChartCard>
-      </Grid>
-      <Grid item xs={12}>
-        <ChartCard title="Complaints Heatmap by Train (GitHub Style)">
-          <Box mb={2} maxWidth={400} mx="auto">
-            <TextField
-              label="Train Number"
-              value={trainNo}
-              onChange={(e) =>
-                setTrainNo(e.target.value.replace(/\D/g, "").slice(0, 10))
-              }
-              size="small"
-              fullWidth
-            />
-          </Box>
-          {trainNo && heatmap.length ? (
-            <Box sx={{ overflowX: "auto", width: "100%" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                  gap: 1,
-                }}
-              >
-                {/* Days column */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    mr: 1,
-                    height: 14 * 12,
-                  }}
-                >
-                  {days.map((d, i) => (
-                    <Typography
-                      key={d}
-                      variant="caption"
-                      sx={{ height: 14, mb: 1, color: "text.secondary" }}
-                    >
-                      {d}
-                    </Typography>
-                  ))}
-                </Box>
-                {/* Heatmap grid */}
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
-                  {heatmap.map((week, weekIdx) => (
-                    <Box
-                      key={weekIdx}
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 0.5,
-                      }}
-                    >
-                      {week.map((val, dayIdx) => (
-                        <Box
-                          key={dayIdx}
-                          sx={{
-                            width: 14,
-                            height: 14,
-                            background: getColor(val),
-                            borderRadius: 1,
-                            fontSize: 10,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: val > 6 ? "#fff" : "#222",
-                          }}
-                          title={`Complaints: ${val}`}
-                        >
-                          {/* {val} */}
-                        </Box>
-                      ))}
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-              {/* Legend */}
-              <Box
-                mt={2}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                gap={1}
-              >
-                <Typography variant="caption" color="text.secondary">
-                  Less
-                </Typography>
-                {[0, 2, 4, 6, 8].map((v) => (
-                  <Box
-                    key={v}
-                    sx={{
-                      width: 14,
-                      height: 14,
-                      background: getColor(v),
-                      borderRadius: 1,
-                      mx: 0.5,
-                    }}
-                  />
-                ))}
-                <Typography variant="caption" color="text.secondary">
-                  More
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <Box color="grey.500" textAlign="center" py={4}>
-              Enter a train number to view heatmap
-            </Box>
-          )}
         </ChartCard>
       </Grid>
     </Grid>

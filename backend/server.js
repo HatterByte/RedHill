@@ -12,6 +12,7 @@ import otpRoutes from "./routes/otpRoutes.js";
 import AuthAdminRoutes from "./Admin/routes/authAdminRoute.js";
 import ComplaintAdminRoutes from "./Admin/routes/complaintAdminRoute.js";
 import ComplaintStatsAdminRoutes from "./Admin/routes/complaintStatsAdminRoute.js";
+import complaintHeatmapAdminRoute from "./Admin/routes/complaintHeatmapAdminRoute.js";
 
 dotenv.config();
 const app = express();
@@ -45,6 +46,7 @@ app.use("otp", otpRoutes);
 app.use("/admin/auth", AuthAdminRoutes);
 app.use("/admin/complaints", ComplaintAdminRoutes);
 app.use("/admin/complaints-stats", ComplaintStatsAdminRoutes);
+app.use("/admin/complaints", complaintHeatmapAdminRoute);
 
 // Start server
 const PORT = process.env.PORT || 5000;
