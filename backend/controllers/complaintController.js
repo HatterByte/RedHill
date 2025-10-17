@@ -77,7 +77,7 @@ export const registerComplaint = async (req, res) => {
     let complaintAnalysis = {
       type: type || "",
       subtype: subtype || "",
-      severity: "Low",
+      severity: "",
     };
 
     if ((!type || !subtype) && (description || media.length > 0)) {

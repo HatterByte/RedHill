@@ -39,9 +39,9 @@ export const analyzeComplaint = async (complaintData) => {
             // Extract the type, subtype and severity from the response
             // Adjust this based on your actual API response structure
             const {
-                type = "Other",
-                subtype = "General",
-                severity = "Low"
+                type = "Coach - Cleanliness",
+                subtype = "Washbasin",
+                severity = "Medium",
             } = response.data;
             
             return {
