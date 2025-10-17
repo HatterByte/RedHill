@@ -83,6 +83,7 @@ export const registerComplaint = async (req, res) => {
     if ((!type || !subtype) && (description || media.length > 0)) {
       complaintAnalysis = await analyzeComplaint({ description, media });
     }
+    console.log("Complaint analysis result:", complaintAnalysis);
 
     let severity = determineSeverity(
       type || complaintAnalysis.type, subtype || complaintAnalysis.subtype

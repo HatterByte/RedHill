@@ -39,7 +39,7 @@ export const analyzeComplaint = async (complaintData) => {
             // Extract the type, subtype and severity from the response
             // Adjust this based on your actual API response structure
             const {
-                type = "Coach - Cleanliness",
+                type = "Coach-Cleanliness",
                 subtype = "Washbasin",
                 severity = "Medium",
             } = response.data;
@@ -53,9 +53,9 @@ export const analyzeComplaint = async (complaintData) => {
             // If the API doesn't return the expected data
             console.warn("AI model API returned unexpected data:", response.data);
             return {
-                type: "OTHER",
-                subtype: "GENERAL",
-                severity: "LOW"
+                type: "Coach-Cleanliness",
+                subtype: "Washbasin",
+                severity: "Medium",
             };
         }
         
@@ -63,9 +63,9 @@ export const analyzeComplaint = async (complaintData) => {
         console.error("Error calling AI model API:", error.message);
         // Return default values in case of error
         return {
-            type: "OTHER",
-            subtype: "GENERAL",
-            severity: "LOW"
+            type: "Coach-Cleanliness",
+            subtype: "Washbasin",
+            severity: "Medium",
         };
     }
 };

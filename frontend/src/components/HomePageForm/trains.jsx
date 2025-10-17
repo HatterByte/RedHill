@@ -146,6 +146,8 @@ const Trains = (props) => {
           result.type &&
           result.subtype
         ) {
+          console.log("Backend returned type/subtype:", { type: result.type, subtype: result.subtype });
+          console.log("Available types in categoryData:", Object.keys(data));
           setRegisteredComplaint({
             id: result.id,
             type: result.type,
@@ -546,68 +548,6 @@ const Trains = (props) => {
         </div>
       </form>
 
-      {/* Update Complaint Type Modal */}
-      {showUpdateModal && registeredComplaint && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold mb-4">
-              Update Complaint Type
-            </h3>
-            <div className="mb-4">
-              <label className="block text-sm text-[#7c7c7c] mb-2">
-                Suggested Type
-              </label>
-              <input
-                type="text"
-                value={registeredComplaint.type}
-                onChange={(e) =>
-                  setRegisteredComplaint({
-                    ...registeredComplaint,
-                    type: e.target.value,
-                  })
-                }
-                className="w-full border-[1px] h-12 border-[#d9d9d9] p-2 text-xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm text-[#7c7c7c] mb-2">
-                Suggested Sub-Type
-              </label>
-              <input
-                type="text"
-                value={registeredComplaint.subtype}
-                onChange={(e) =>
-                  setRegisteredComplaint({
-                    ...registeredComplaint,
-                    subtype: e.target.value,
-                  })
-                }
-                className="w-full border-[1px] h-12 border-[#d9d9d9] p-2 text-xl flex items-center bg-[#f4f5f6] rounded-lg focus:outline-1 focus:outline-[#bbbbbb]"
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowUpdateModal(false)}
-                className="px-4 py-2 text-sm rounded-lg bg-[#f4f5f6] text-[#333] hover:bg-[#e1e1e1] transition-all duration-300 ease-in-out"
-              >
-                Skip
-              </button>
-              <button
-                onClick={() =>
-                  handleUpdateComplaint(
-                    registeredComplaint.type,
-                    registeredComplaint.subtype
-                  )
-                }
-                className="px-4 py-2 text-sm bg-[#75002b] text-white rounded-lg hover:bg-[#f58220] transition-all duration-500 ease-in-out"
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Update type modal component */}
       <UpdateTypeModal
         show={showUpdateModal}
@@ -645,7 +585,20 @@ const UpdateTypeModal = ({
   const [selectedType, setSelectedType] = useState(initialType || "");
   const [selectedSubtype, setSelectedSubtype] = useState(initialSubtype || "");
 
+  // Update state when initial values change
+  useEffect(() => {
+    console.log("UpdateTypeModal received:", { initialType, initialSubtype, allTypes: Object.keys(allTypes || {}) });
+    if (initialType) {
+      setSelectedType(initialType);
+    }
+    if (initialSubtype) {
+      setSelectedSubtype(initialSubtype);
+    }
+  }, [initialType, initialSubtype]);
+
   if (!show) return null;
+
+  console.log("Modal rendering with:", { selectedType, selectedSubtype, allTypesKeys: Object.keys(allTypes || {}) });
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-center justify-center">
