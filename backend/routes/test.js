@@ -4,9 +4,9 @@ const router = express.Router();
 // Dummy classification function
 const classifyComplaint = (complaintData) => {
     return {
-        type: "Security",
-        subtype: "Theft of Passengers Belongings/Snatching",
-        severity: "High",
+        type: "Coach - Cleanliness",
+        subtype: "Washbasin",
+        severity: "Medium",
     };
 };
 
