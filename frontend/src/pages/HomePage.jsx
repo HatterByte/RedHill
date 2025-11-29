@@ -8,6 +8,7 @@ import Auth from "../components/auth/Auth";
 import HomePageIconGrid from "../components/HomePageIconGrid";
 import SuggestionsForm from "../components/HomePageForm/SuggestionsForm";
 import TrackConcernForm from "../components/HomePageForm/TrackConcernForm";
+import ChatWidget from "../components/ChatWidget";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("train");
@@ -30,6 +31,7 @@ const HomePage = () => {
         </div>
       </div>
       {/* <Footer /> */}
+      <ChatWidget />
     </>
   );
 };
